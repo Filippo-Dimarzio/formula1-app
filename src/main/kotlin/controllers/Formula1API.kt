@@ -1,7 +1,6 @@
 package controllers
 
 import ie.setu.models.Formula1
-import listDriversTeam
 import models.Driver
 import utils.formatListString
 import java.util.ArrayList
