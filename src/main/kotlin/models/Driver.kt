@@ -1,5 +1,5 @@
 package models
 
-data class Driver (var itemId: Int = 0,
-                   var itemContents : String,
+data class Driver (var driverId: Int = 0,
+                   var driverDetails : String,
                    var isItemComplete: Boolean = false)
