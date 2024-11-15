@@ -1,7 +1,4 @@
-package ie.setu
-
 import controllers.Formula1API
-import ie.setu.controllers.Formula1API
 import ie.setu.models.Formula1
 import utils.readNextInt
 import utils.readNextLine
@@ -96,10 +93,11 @@ fun mainMenu() = readNextInt(
 
 //DRIVER MENU
 fun addDriver() {
-    val driverTitle = readNextLine("Enter a driver's name: ")
+    val driverName = readNextLine("Enter a driver's name: ")
     val driverTeam = readNextInt("Enter a driver's team: ")
     val driverNationality = readNextLine("Enter a driver's nationality: ")
-    val isAdded = Formula1API.add(Formula(driverTitle = driverTitle, driverTeam = driverTeam, driverNationality = driverNationality))
+    val careerLength = readNextLine( "Enter career length by number of years:")
+    val isAdded = Formula1API.add(Formula(driverTitle = driverTitle, driverTeam = driverTeam, driverNationality = driverNationality, careerLength = careerLength))
 
     if (isAdded) {
         println("Added Successfully")
@@ -124,6 +122,7 @@ fun listDriver() {
             1 -> listAllDrivers()
             2 -> listDriversTeam()
             3 -> listDriverDetails()
+            4 -> listCareerLength()
             else -> println("Invalid option entered: $option")
         }
     } else {
@@ -134,6 +133,7 @@ fun listDriver() {
 fun listAllDrivers() = println(Formula1API.listAllDrivers())
 fun listDriversTeam() = println(Formula1API.listDriversTeam())
 fun listDriverDetails() = println(Formula1API.listDriverDetails())
+fun listCareerLength() = println(Formula1API.listCareerLength())
 
 
 fun updateDriver() {
@@ -158,7 +158,7 @@ fun updateDriver() {
     }
 }
 
-fun deleteNote() {
+fun deleteDriver() {
     listDriver()
     if (Formula1API.numberOfDrivers() > 0) {
         // only ask the user to choose the note to delete if notes exist
@@ -190,9 +190,9 @@ fun deleteNote() {
 //------------------------------------
 //DRIVER REPORTS MENU
 //------------------------------------
-fun searchNotes() {
-    val searchTitle = readNextLine("Enter the description to search by: ")
-    val searchResults = noteAPI.searchNotesByTitle(searchTitle)
+fun searchDriverByCountry() {
+    val driverName = readNextLine("Enter the description to search by: ")
+    val searchResults = Formula1API.searchDriverByName(driverName)
     if (searchResults.isEmpty()) {
         println("No notes found")
     } else {
