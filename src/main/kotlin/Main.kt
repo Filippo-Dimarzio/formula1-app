@@ -172,3 +172,68 @@ fun deleteNote() {
         }
     }
 }
+
+//-------------------------------------------
+//ATTRIBUTES MENU (only available for active notes)
+//-------------------------------------------
+
+
+
+
+
+//------------------------------------
+//TEAMS MENU
+//------------------------------------
+
+
+
+//------------------------------------
+//DRIVER REPORTS MENU
+//------------------------------------
+fun searchNotes() {
+    val searchTitle = readNextLine("Enter the description to search by: ")
+    val searchResults = noteAPI.searchNotesByTitle(searchTitle)
+    if (searchResults.isEmpty()) {
+        println("No notes found")
+    } else {
+        println(searchResults)
+    }
+}
+
+//------------------------------------
+//ATTRIBUTES REPORTS MENU
+//------------------------------------
+
+
+//------------------------------------
+//TEAM REPORTS MENU
+//------------------------------------
+
+//------------------------------------
+// Exit App
+//------------------------------------
+fun exitApp() {
+    println("Exiting...bye")
+    exitProcess(0)
+}
+
+//------------------------------------
+//HELPER FUNCTIONS
+//------------------------------------
+
+private fun askUserToChooseDriver(): Formula1? {
+    listDriverDetails()
+    if (Formula1API.numberOfDrivers() > 0) {
+        val note = Formula1API.findDriver(readNextInt("\nEnter the id of the driver: "))
+        if (note != null) {
+            if (formula1.isDriverInTheSystem) {
+                println("Driver is in the System")
+            } else {
+                return driver
+            }
+        } else {
+            println("Driver id is not valid")
+        }
+    }
+    return null
+}
