@@ -5,6 +5,7 @@ import ie.setu.controllers.Formula1API
 import ie.setu.models.Formula1
 import utils.readNextInt
 import utils.readNextLine
+import javax.management.Attribute
 import kotlin.system.exitProcess
 
 fun main() = runMenu()
@@ -19,10 +20,10 @@ fun runMenu() {
             5->  listDriverDetails()
 
             5 -> addAttributesToDriver()
-            6 -> listDriverAttributes
+            6 -> listDriverAttributes()
             7 -> updateAttributesToDriver()
             8 -> deleteDriverAttributes()
-
+            9 -> searchDriverByCountry()
             10 -> markDriverExists()
 
             11 -> addTeam()
@@ -31,13 +32,16 @@ fun runMenu() {
             14 -> updateTeamDetails()
             15 -> deleteTeam()
             16 -> listTeamDetails()
-            17-> searchDriverByCountry()
+            17-> askUserToChooseDriver()
             // -> ""
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
     } while (true)
 }
+
+
+
 
 fun mainMenu() = readNextInt(
     """ 
@@ -127,7 +131,7 @@ fun listDriver() {
             else -> println("Invalid option entered: $option")
         }
     } else {
-        println("Option Invalid - No notes stored")
+        println("Option Invalid - No driver stored")
     }
 }
 
@@ -158,7 +162,7 @@ fun updateDriver() {
     }
 }
 
-fun deleteNote() {
+fun deleteDriver() {
     listDriver()
     if (Formula1API.numberOfDrivers() > 0) {
         // only ask the user to choose the note to delete if notes exist
@@ -174,8 +178,28 @@ fun deleteNote() {
 }
 
 //-------------------------------------------
-//ATTRIBUTES MENU (only available for active notes)
+//ATTRIBUTES MENU
 //-------------------------------------------
+
+
+
+
+
+fun updateAttributesToDriver() {
+    TODO("Not yet implemented")
+}
+
+fun listDriverAttributes() {
+    TODO("Not yet implemented")
+}
+
+fun addAttributesToDriver() {
+    TODO("Not yet implemented")
+}
+
+fun markDriverExists() {
+    TODO("Not yet implemented")
+}
 
 
 
@@ -186,23 +210,51 @@ fun deleteNote() {
 //------------------------------------
 
 
+fun deleteTeam(){
+    TODO("Not yet implemented")
+}
+
+fun listTeamDetails(){
+    TODO("Not yet implemented")
+}
+
+fun updateTeamDetails(){
+    TODO("Not yet implemented")
+}
+
+fun listTeamLocation() {
+    TODO("Not yet implemented")
+}
+
+fun addTeamLocation() {
+    TODO("Not yet implemented")
+}
+
+fun addTeam() {
+    TODO("Not yet implemented")
+}
 
 //------------------------------------
 //DRIVER REPORTS MENU
 //------------------------------------
-fun searchNotes() {
-    val searchTitle = readNextLine("Enter the description to search by: ")
-    val searchResults = noteAPI.searchNotesByTitle(searchTitle)
-    if (searchResults.isEmpty()) {
-        println("No notes found")
+fun searchDriver() {
+    val searchTitle = readNextLine("Enter the driver nationality to search by: ")
+    val searchDriver = Formula1API.searchDriverByName(searchDriver())
+    if (searchDriver.isEmpty()) {
+        println("No driver found")
     } else {
-        println(searchResults)
+        println(searchDriver)
     }
 }
 
 //------------------------------------
 //ATTRIBUTES REPORTS MENU
 //------------------------------------
+fun searchDriverByCountry(drivers: List<Formula1>, country: String) =
+    drivers.filter { it.country == country }
+
+fun deleteDriverAttributes(drivers: List<Formula1>, attribute: Attribute) =
+    drivers.filter { it.podium != attribute }
 
 
 //------------------------------------
