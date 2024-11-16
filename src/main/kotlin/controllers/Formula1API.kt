@@ -1,10 +1,12 @@
 package controllers
 
+import ie.setu.ie.setu.Team
 import ie.setu.models.Formula1
 
 class Formula1API {
 
     private var formulas1 = ArrayList<Formula1>()
+    private val teams = ArrayList<Team>()
 
     // ----------------------------------------------
     //  For Managing the ID internally in the program
@@ -79,5 +81,47 @@ class Formula1API {
     private fun formatListString(formula1s: List<Formula1>): String {
 
         return formula1s.joinToString("\n") { "Driver: ${it.driverName}, Team: ${it.driverTeam}, Nationality: ${it.driverNationality}" }
+    }
+
+    // ----------------------------------------------
+    //  TEAM METHODS
+    // ----------------------------------------------
+
+    fun addTeam(team: Team): Boolean {
+        return if (team.teamName.isNotEmpty() && team.teamLocation.isNotEmpty()) {
+            // Add the team to the list
+            teams.add(team)
+            true  // Successfully added the team
+        } else {
+            false  // Team name or location is empty, so the team is not added
+        }
+    }
+
+    fun listAllTeams(): List<Team> {
+        // Generate IDs dynamically or using a counter
+        return teams.ifEmpty {
+            val teamList = mutableListOf<Team>()
+            teamList.add(Team(id = 1, teamName = "Red Bull Racing", teamLocation = "Milton Keynes"))
+            teamList.add(Team(id = 2, teamName = "Scuderia Ferrari", teamLocation = "Monza"))
+            teamList.add(Team(id = 3, teamName = "Alpine F1", teamLocation = "Oxfordshire"))
+            teamList
+        }
+    }
+
+    fun deleteTeam(teamId: Int): Boolean {
+        // Find the team by its ID
+        val teamToDelete = teams.find { it.id == teamId }
+
+        return if (teamToDelete != null) {
+            // Remove the team from the list
+            teams.remove(teamToDelete)
+            true  // Successfully deleted the team
+        } else {
+            false  // Team not found, so deletion fails
+        }
+    }
+
+    fun findTeamById(teamId: Int): Team? {
+        return teams.find { it.id == teamId }
     }
 }
