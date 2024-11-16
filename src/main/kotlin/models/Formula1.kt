@@ -1,8 +1,16 @@
 package ie.setu.models
 
-data class Formula1 (var noteId: Int = 0,
-                var noteTitle: String,
-                var notePriority: Int,
-                var noteCategory: String,
-                var isNoteArchived: Boolean = false)
+data class Formula1 ( val country: Any,
+                      val podium: Any,
+                      val driverName: String,
+                        val driverNationality: String,
+                        val driverTeam: String
+
+
+
+               ) {
+
+
+
+}
 

@@ -68,10 +68,14 @@ class Formula1API {
     fun findFormula1(id: Int) =
         formulas1.find { formula1 -> formula1.formula1Id == id }
 
-    fun searchDriverByName(searchString: String) =
+    fun searchDriverByNationality(searchString: String) =
         formatListString(
             formulas1.filter { formula1 ->
                 formula1.driverName.contains(searchString, ignoreCase = true)
             }
         )
+
+    private fun formatListString(formula1s: List<Formula1>): Any {
+        TODO("Not yet implemented")
+    }
 }
