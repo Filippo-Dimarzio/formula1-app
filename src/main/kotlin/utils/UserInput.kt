@@ -1,6 +1,4 @@
-package ie.setu.utils
-
-class UserInput {
+package utils
 
     fun readIntNotNull() = readlnOrNull()?.toIntOrNull() ?: -1
 
@@ -57,4 +55,3 @@ class UserInput {
             }
         } while (true)
     }
-}

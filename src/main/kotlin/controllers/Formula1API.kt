@@ -1,9 +1,6 @@
 package controllers
 
 import ie.setu.models.Formula1
-import models.Driver
-import utils.formatListString
-import java.util.ArrayList
 
 class Formula1API {
 
@@ -18,7 +15,7 @@ class Formula1API {
     // ----------------------------------------------
     //  CRUD METHODS FOR Formula1 ArrayList
     // ----------------------------------------------
-    fun add(driver: Driver): Boolean {
+    fun add(formula1: Formula1): Boolean {
         formula1.formula1Id = getId()
         return formulas1.add(formula1)
     }
@@ -27,55 +24,60 @@ class Formula1API {
 
     fun update(id: Int, formula1: Formula1?): Boolean {
         val foundFormula1 = findFormula1(id)
+
         if ((foundFormula1 != null) && (formula1 != null)) {
             foundFormula1.driverName = formula1.driverName
             foundFormula1.driverTeam = formula1.driverTeam
             foundFormula1.driverNationality = formula1.driverNationality
             return true
         }
+
         return false
+    }
+
+    private fun findFormula1(id: Int): Formula1? {
+        return formulas1.find { it.formula1Id == id }
     }
 
     // ----------------------------------------------
     //  LISTING METHODS FOR Formula1 ArrayList
     // ----------------------------------------------
-    fun listAllDrivers() =
+    fun listAllDrivers(): String =
         if (formulas1.isEmpty()) "No drivers stored"
         else formatListString(formulas1)
 
-    fun listDriversTeam() =
-        if (formulas1.count { formula1 -> formula1.isDriversTeam } == 0) "No teams have been added"
-        else formatListString(formulas1.filter { formula1 -> formula1.isDriversTeam })
+    fun listDriversTeam(): String =
+        if (formulas1.isEmpty()) "No teams stored"
+        else formatListString(formulas1.filter { it.driverTeam.isNotEmpty() })
 
-    fun listDriverDetails() =
-        if (numberOfDrivers() == 0) "Details have not been added"
-        else formatListString(formulas1.filter { formula1 -> formula1.isDriverInSystem })
+    fun listDriversByNationality(): String =
+        if (formulas1.isEmpty()) "No drivers stored"
+        else formatListString(formulas1.filter { it.driverNationality.isNotEmpty() })
 
     // ----------------------------------------------
     //  COUNTING METHODS FOR Formula1 ArrayList
     // ----------------------------------------------
     fun numberOfDrivers() = formulas1.size
 
-    fun numberOfTeams(): Int =
-        formulas1.count { formula1 -> formula1.isTeamInSystem }
+    fun numberOfTeams(): Int = formulas1.count { formula1 -> formula1.driverTeam.isNotEmpty() }
 
-    fun numberOfDriverAchievements(): Int =
-        formulas1.count { formula1 -> !formula1.isDriverInSystem }
+    fun numberOfTeamAchievements(): Int = formulas1.count { formula1 -> formula1.driverTeam.isNotEmpty() }
 
     // ----------------------------------------------
     //  SEARCHING METHODS
     // ----------------------------------------------
-    fun findFormula1(id: Int) =
+    fun findDriver(id: Int): Formula1? =
         formulas1.find { formula1 -> formula1.formula1Id == id }
 
-    fun searchDriverByNationality(searchString: String) =
+    fun searchDriverByNationality(searchString: String): String =
         formatListString(
             formulas1.filter { formula1 ->
-                formula1.driverName.contains(searchString, ignoreCase = true)
+                formula1.driverNationality.contains(searchString, ignoreCase = true)
             }
         )
 
-    private fun formatListString(formula1s: List<Formula1>): Any {
-        TODO("Not yet implemented")
+    private fun formatListString(formula1s: List<Formula1>): String {
+
+        return formula1s.joinToString("\n") { "Driver: ${it.driverName}, Team: ${it.driverTeam}, Nationality: ${it.driverNationality}" }
     }
 }
