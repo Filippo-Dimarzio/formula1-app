@@ -1,6 +1,7 @@
 package ie.setu
 
 import controllers.Formula1API
+import ie.setu.ie.setu.Team
 import ie.setu.models.Formula1
 import utils.readNextInt
 import utils.readNextLine
@@ -18,18 +19,20 @@ fun runMenu() {
             2 -> listDriver()
             3 -> updateDriver()
             4 -> deleteDriver()
+
             5 -> addAttributesToDriver()
             6 -> listDriverAttributes()
             7 -> updateAttributesToDriver()
             8 -> deleteDriverAttributes()
-            9 -> searchDriverByCountry()
+            //9 -> searchDriverByCountry()
             10 -> markDriverExists()
-            11 -> addTeam()
-            12 -> addTeamLocation()
-            13 -> listTeamLocation()
-            14 -> updateTeamDetails()
-            15 -> deleteTeam()
-            16 -> listTeamDetails()
+
+            11 -> addTeamAndLocation()
+            12 -> listTeamLocation()
+            13 -> updateTeamDetails()
+            14 -> deleteTeam()
+            15 -> listTeamDetails()
+
             17 -> askUserToChooseDriver()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
@@ -54,21 +57,21 @@ fun mainMenu() = readNextInt(
          > |   5) Add Attributes to Driver (Trophy & Podium)   |
          > |   6) List Driver Attributes                       |
          > |   7) Update Driver Attributes                     |
-         > |   8) Delete Driver Attributes                     | 
-         > |                                                   |
-         > |   9) Mark Driver Exists                          |
+         > |   8) Delete Driver Attributes                     |   
+         >     9) Search Driver by Nationality                 |                               
+         > |   10) Mark Driver Exists                          |
          > -----------------------------------------------------  
          > | TEAM MENU                                         | 
-         > |   10) Add a Team                                  |
-         > |   11) Add a Team Location                         |
+         > |   11) Add a Team and It's Location                |
          > |   12) List Team Location                          |
-         > |   13) Update Team Details                         | 
-         > |   14) Delete Team                                 |
+         > |   13) Update Team Details                         |
+         > |   14) Delete Team                                 | 
          > |   15) List Team Details                           |
+         > |   16)                                             |
          > -----------------------------------------------------
          > | REPORT MENU FOR DRIVER                            | 
-         > |   16) Search for all drivers (by driver team)     |
-         > |   17) Search Driver By Country                                       |
+         > |   17) Search for all drivers (by driver team)     |
+         > |   18) Search Driver By Country                    |
          > |   19) .....                                       |
          > |   20) .....                                       |
          > |   21) .....                                       |
@@ -101,12 +104,15 @@ fun addDriver() {
     val driverName = readNextLine("Enter a driver's name: ")
     val driverTeam = readNextLine("Enter a driver's team: ")
     val driverNationality = readNextLine("Enter a driver's nationality: ")
+    val trophies = readNextInt("Enter number of trophies: ")  // Get trophies from user
+    val podiums = readNextInt("Enter number of podiums: ")
 
     // Now no need to pass all parameters, as default values will be used for those not provided
     val isAdded = formula1API.add(Formula1(
         driverName = driverName,
         driverTeam = driverTeam,
         driverNationality = driverNationality
+
     ))
 
     if (isAdded) {
@@ -198,60 +204,172 @@ fun deleteDriver() {
 //------------------------------------
 
 fun addAttributesToDriver() {
-    println("Feature not implemented yet.")
+    val driver = askUserToChooseDriver()
+    if (driver != null) {
+        driver.trophies = readNextInt("Enter the number of trophies: ")
+        driver.podiums = readNextInt("Enter the number of podiums: ")
+
+        if (formula1API.update(driver.id, driver)) {
+            println("Driver attributes added successfully.")
+        } else {
+            println("Failed to add driver attributes.")
+        }
+    }
 }
+
 
 fun listDriverAttributes() {
-    println("Feature not implemented yet.")
+    val drivers = formula1API.listAllDrivers()  // Get the list of drivers from API
+    if (drivers.isNotEmpty()) {
+        drivers.forEach { driver ->
+
+            println("Driver: ${driver.driverName}")
+            println("Trophies: ${driver.trophies}")
+            println("Podiums: ${driver.podiums}")
+            println("---")
+        }
+    } else {
+        println("No drivers found.")
+    }
 }
+
+
 
 fun updateAttributesToDriver() {
-    println("Feature not implemented yet.")
+    val driver = askUserToChooseDriver()
+    if (driver != null) {
+        driver.trophies = readNextInt("Enter the new number of trophies: ")
+        driver.podiums = readNextInt("Enter the new number of podiums: ")
+
+        if (formula1API.update(driver.id, driver)) {
+            println("Driver attributes updated successfully.")
+        } else {
+            println("Failed to update driver attributes.")
+        }
+    }
 }
 
+
 fun deleteDriverAttributes() {
-    println("Feature not implemented yet.")
+    val driver = askUserToChooseDriver()
+    if (driver != null) {
+        driver.trophies = 0
+        driver.podiums = 0
+
+        if (formula1API.update(driver.id, driver)) {
+            println("Driver attributes deleted successfully.")
+        } else {
+            println("Failed to delete driver attributes.")
+        }
+    }
 }
 
 fun markDriverExists() {
-    println("Feature not implemented yet.")
+    val driver = askUserToChooseDriver()
+    if (driver != null) {
+        driver.wasDriverAdded = true
+
+        if (formula1API.update(driver.id, driver)) {
+            println("Driver marked as existing.")
+        } else {
+            println("Failed to mark driver as existing.")
+        }
+    }
 }
+
 
 //------------------------------------
 // TEAM MENU
 //------------------------------------
 
-fun addTeam() {
-    println("Feature not implemented yet.")
+fun addTeamAndLocation() {
+    val teamName = readNextLine("Enter the team name: ")
+    val teamLocation = readNextLine("Enter the team location: ")
+
+    // Create the team with the provided name and location
+    val newTeam = Team(teamName = teamName, teamLocation = teamLocation)
+
+    // Add the new team to the API
+    val isAdded = formula1API.addTeam(newTeam)
+
+    if (isAdded) {
+        println("Team added successfully.")
+    } else {
+        println("Failed to add team.")
+    }
 }
 
-fun addTeamLocation() {
-    println("Feature not implemented yet.")
+fun Team(teamName: String, teamLocation: String): Team {
+
 }
+
 
 fun listTeamLocation() {
-    println("Feature not implemented yet.")
+    val teams = formula1API.listAllTeams()  // Use the listAllTeams method of Formula1API
+    if (teams.isNotEmpty()) {
+        teams.forEach { team ->
+            println("Team: ${team.teamName}, Location: ${team.teamLocation}")
+        }
+    } else {
+        println("No teams found.")
+    }
 }
+
+
+
 
 fun updateTeamDetails() {
-    println("Feature not implemented yet.")
+    listTeamDetails()  // List all teams
+    val teamId = readNextInt("Enter the team ID to update: ")
+    val team = formula1API.findTeamById(teamId)
+
+    val newTeamName = readNextLine("Enter new team name: ")
+    val newLocation = readNextLine("Enter new location: ")
+
+    if (team != null) {
+        team.teamName = newTeamName
+    }
+    if (team != null) {
+        team.teamLocation = newLocation
+    }
+
+    println("Team updated successfully.")
 }
+
 
 fun deleteTeam() {
-    println("Feature not implemented yet.")
+    listTeamDetails()  // List all teams
+    val teamId = readNextInt("Enter the team ID to delete: ")
+
+    if (formula1API.deleteTeam(teamId)) {  // Assuming deleteTeam method exists in Formula1API
+        println("Team deleted successfully.")
+    } else {
+        println("Failed to delete team.")
+    }
 }
 
+
+
 fun listTeamDetails() {
-    println("Feature not implemented yet.")
+    val teams = formula1API.listAllTeams()  // Assuming it returns a list of teams
+
+    if (teams.isNotEmpty()) {
+        teams.forEach { team ->
+            println("Team: ${team.teamName}, Location: ${team.teamLocation}")
+        }
+    } else {
+        println("No teams found.")
+    }
 }
+
+
 
 //------------------------------------
 //DRIVER REPORTS MENU
 //------------------------------------
 
-fun searchDriverByCountry() {
-    TODO("Not yet implemented")
-}
+
+
 //------------------------------------
 //TEAM REPORTS MENU
 //------------------------------------
@@ -271,8 +389,6 @@ fun exitApp() {
 // DRIVER SELECTION HELPER FUNCTION
 //------------------------------------
 
-
-
 private fun askUserToChooseDriver(): Formula1? {
     listDriversTeam()
     if (formula1API.numberOfDrivers() > 0) {
@@ -289,10 +405,3 @@ private fun askUserToChooseDriver(): Formula1? {
     }
     return null // selected driver is not valid
 }
-
-
-
-
-
-
-
