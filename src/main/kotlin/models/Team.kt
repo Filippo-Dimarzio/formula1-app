@@ -1,4 +1,4 @@
-package ie.setu.ie.setu
+package ie.setu.models
 
 data class Team(
     var teamName: String,

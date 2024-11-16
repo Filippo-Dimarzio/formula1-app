@@ -1,7 +1,7 @@
 package ie.setu
 
 import controllers.Formula1API
-import ie.setu.ie.setu.Team
+import ie.setu.models.Team
 import ie.setu.models.Formula1
 import utils.readNextInt
 import utils.readNextLine
@@ -299,9 +299,7 @@ fun addTeamAndLocation() {
     }
 }
 
-fun Team(teamName: String, teamLocation: String): Team {
 
-}
 
 
 fun listTeamLocation() {

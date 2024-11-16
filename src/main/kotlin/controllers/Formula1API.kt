@@ -1,6 +1,6 @@
 package controllers
 
-import ie.setu.ie.setu.Team
+import ie.setu.models.Team
 import ie.setu.models.Formula1
 
 class Formula1API {
