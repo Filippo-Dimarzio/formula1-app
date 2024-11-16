@@ -1,13 +1,14 @@
 package ie.setu.models
 
 data class Formula1(
-    val country: Any,
-    val podium: Any,
     var driverName: String,
-    var driverNationality: String,
     var driverTeam: String,
-    var formula1Id: Int,
-    val id: Int,
+    var driverNationality: String,
+    val country: String = "",  // Default value empty string
+    var formula1Id: Int = 0,  // Default value 0
+    val id: Int = 0,  // Default value 0
+    val podium: Int = 0,  // Default value 0
+    val wasDriverAdded: Boolean = true  // Default value true
 
 
     ) {

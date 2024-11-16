@@ -101,7 +101,13 @@ fun addDriver() {
     val driverName = readNextLine("Enter a driver's name: ")
     val driverTeam = readNextLine("Enter a driver's team: ")
     val driverNationality = readNextLine("Enter a driver's nationality: ")
-    val isAdded = formula1API.add(Formula1(driverName = driverName, driverTeam = driverTeam, driverNationality = driverNationality))
+
+    // Now no need to pass all parameters, as default values will be used for those not provided
+    val isAdded = formula1API.add(Formula1(
+        driverName = driverName,
+        driverTeam = driverTeam,
+        driverNationality = driverNationality
+    ))
 
     if (isAdded) {
         println("Driver added successfully.")
@@ -109,6 +115,7 @@ fun addDriver() {
         println("Failed to add driver.")
     }
 }
+
 
 fun listDriver() {
     if (Formula1API.numberOfDrivers() > 0) {
