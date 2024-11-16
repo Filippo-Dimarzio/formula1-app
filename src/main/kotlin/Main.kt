@@ -1,12 +1,13 @@
 package ie.setu
 
 import controllers.Formula1API
-import ie.setu.controllers.Formula1API
 import ie.setu.models.Formula1
 import utils.readNextInt
 import utils.readNextLine
-import javax.management.Attribute
 import kotlin.system.exitProcess
+
+
+private val formula1API = Formula1API()
 
 fun main() = runMenu()
 
@@ -17,29 +18,24 @@ fun runMenu() {
             2 -> listDriver()
             3 -> updateDriver()
             4 -> deleteDriver()
-            5->  listDriverDetails()
-
             5 -> addAttributesToDriver()
             6 -> listDriverAttributes()
             7 -> updateAttributesToDriver()
             8 -> deleteDriverAttributes()
             9 -> searchDriverByCountry()
             10 -> markDriverExists()
-
             11 -> addTeam()
             12 -> addTeamLocation()
             13 -> listTeamLocation()
             14 -> updateTeamDetails()
             15 -> deleteTeam()
             16 -> listTeamDetails()
-            17-> askUserToChooseDriver()
-            // -> ""
+            17 -> askUserToChooseDriver()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
     } while (true)
 }
-
 
 
 
@@ -97,18 +93,20 @@ fun mainMenu() = readNextInt(
          > ==>> """.trimMargin(">")
 )
 
+//------------------------------------
+// DRIVER MENU
+//------------------------------------
 
-//DRIVER MENU
 fun addDriver() {
-    val driverTitle = readNextLine("Enter a driver's name: ")
-    val driverTeam = readNextInt("Enter a driver's team: ")
+    val driverName = readNextLine("Enter a driver's name: ")
+    val driverTeam = readNextLine("Enter a driver's team: ")
     val driverNationality = readNextLine("Enter a driver's nationality: ")
-    val isAdded = Formula1API.add(Formula(driverTitle = driverTitle, driverTeam = driverTeam, driverNationality = driverNationality))
+    val isAdded = formula1API.add(Formula1(driverName = driverName, driverTeam = driverTeam, driverNationality = driverNationality))
 
     if (isAdded) {
-        println("Added Successfully")
+        println("Driver added successfully.")
     } else {
-        println("Add Failed")
+        println("Failed to add driver.")
     }
 }
 
@@ -125,167 +123,169 @@ fun listDriver() {
         )
 
         when (option) {
-            1 -> listAllDrivers()
-            2 -> listDriversTeam()
-            3 -> listDriverDetails()
+            1 -> (listAllDrivers())
+            2 -> (listDriversTeam())
+            3 -> (listDriversByNationality())
             else -> println("Invalid option entered: $option")
         }
     } else {
-        println("Option Invalid - No driver stored")
+        println("Option Invalid - No drivers stored")
     }
 }
 
-fun listAllDrivers() = println(Formula1API.listAllDrivers())
-fun listDriversTeam() = println(Formula1API.listDriversTeam())
-fun listDriverDetails() = println(Formula1API.listDriverDetails())
+
+fun listAllDrivers() = println(formula1API.listAllDrivers())
+fun listDriversTeam() = println(formula1API.listDriversTeam())
+fun listDriversByNationality() = println(formula1API.listDriversByNationality())
+
+
 
 
 fun updateDriver() {
     listDriver()
-    if (Formula1API.numberOfDrivers() > 0) {
-        // only ask the user to choose the note if notes exist
-        val id = readNextInt("Enter the id of the note to update: ")
-        if (Formula1API.findDriver(id) != null) {
-            val driverName = readNextLine("Enter a driver's name: ")
-            val driverTeam = readNextInt("Enter a driver's team: ")
-            val driverNationality = readNextLine("Enter a driver nationality: ")
+    if (formula1API.numberOfDrivers() > 0) {
 
-            // pass the index of the driver and the new driver details to Formula1API
-            if (Formula1API.update(id, Formula1(0, driverName, driverTeam, driverNationality))){
-                println("Update Successful")
+        val id = readNextInt("Enter the ID of the driver to update: ")
+        val driver = formula1API.findDriver(id)
+
+        if (driver != null) {
+            // Prompt for new details
+            val driverName = readNextLine("Enter new driver name: ")
+            val driverTeam = readNextLine("Enter new driver team: ")
+            val driverNationality = readNextLine("Enter new driver nationality: ")
+
+            // Update the existing driver object with new details
+            driver.driverName = driverName
+            driver.driverTeam = driverTeam
+            driver.driverNationality = driverNationality
+
+            if (formula1API.update(id, driver)) {
+                println("Driver updated successfully.")
             } else {
-                println("Update Failed")
+                println("Failed to update driver.")
             }
         } else {
-            println("There are no drivers for this index number")
+            println("No driver found with this ID.")
         }
+    } else {
+        println("No drivers available to update.")
     }
 }
+
 
 fun deleteDriver() {
     listDriver()
-    if (Formula1API.numberOfDrivers() > 0) {
-        // only ask the user to choose the note to delete if notes exist
-        val id = readNextInt("Enter the id of the driver to delete: ")
-        // pass the index of the driver to NoteAPI for deleting and check for success.
-        val formula1ToDelete = Formula1API.delete(id)
-        if (formula1ToDelete) {
-            println("Delete Successful!")
+    if (formula1API.numberOfDrivers() > 0) {
+        val id = readNextInt("Enter the ID of the driver to delete: ")
+
+        if (formula1API.delete(id)) {
+            println("Driver deleted successfully.")
         } else {
-            println("Delete NOT Successful")
+            println("Failed to delete driver.")
         }
     }
 }
 
-//-------------------------------------------
-//ATTRIBUTES MENU
-//-------------------------------------------
+//------------------------------------
+// ATTRIBUTES MENU
+//------------------------------------
 
-
-
-
-
-fun updateAttributesToDriver() {
-    TODO("Not yet implemented")
+fun addAttributesToDriver() {
+    println("Feature not implemented yet.")
 }
 
 fun listDriverAttributes() {
-    TODO("Not yet implemented")
+    println("Feature not implemented yet.")
 }
 
-fun addAttributesToDriver() {
-    TODO("Not yet implemented")
+fun updateAttributesToDriver() {
+    println("Feature not implemented yet.")
+}
+
+fun deleteDriverAttributes() {
+    println("Feature not implemented yet.")
 }
 
 fun markDriverExists() {
-    TODO("Not yet implemented")
+    println("Feature not implemented yet.")
 }
-
-
-
-
 
 //------------------------------------
-//TEAMS MENU
+// TEAM MENU
 //------------------------------------
 
-
-fun deleteTeam(){
-    TODO("Not yet implemented")
-}
-
-fun listTeamDetails(){
-    TODO("Not yet implemented")
-}
-
-fun updateTeamDetails(){
-    TODO("Not yet implemented")
-}
-
-fun listTeamLocation() {
-    TODO("Not yet implemented")
+fun addTeam() {
+    println("Feature not implemented yet.")
 }
 
 fun addTeamLocation() {
-    TODO("Not yet implemented")
+    println("Feature not implemented yet.")
 }
 
-fun addTeam() {
-    TODO("Not yet implemented")
+fun listTeamLocation() {
+    println("Feature not implemented yet.")
+}
+
+fun updateTeamDetails() {
+    println("Feature not implemented yet.")
+}
+
+fun deleteTeam() {
+    println("Feature not implemented yet.")
+}
+
+fun listTeamDetails() {
+    println("Feature not implemented yet.")
 }
 
 //------------------------------------
 //DRIVER REPORTS MENU
 //------------------------------------
-fun searchDriver() {
-    val searchTitle = readNextLine("Enter the driver nationality to search by: ")
-    val searchDriver = Formula1API.searchDriverByName(searchDriver())
-    if (searchDriver.isEmpty()) {
-        println("No driver found")
-    } else {
-        println(searchDriver)
-    }
+
+fun searchDriverByCountry() {
+    TODO("Not yet implemented")
 }
-
-//------------------------------------
-//ATTRIBUTES REPORTS MENU
-//------------------------------------
-fun searchDriverByCountry(drivers: List<Formula1>, country: String) =
-    drivers.filter { it.country == country }
-
-fun deleteDriverAttributes(drivers: List<Formula1>, attribute: Attribute) =
-    drivers.filter { it.podium != attribute }
-
-
 //------------------------------------
 //TEAM REPORTS MENU
 //------------------------------------
 
+
 //------------------------------------
-// Exit App
+// EXIT APP
 //------------------------------------
+
 fun exitApp() {
-    println("Exiting...bye")
+    println("Exiting the application. Goodbye!")
     exitProcess(0)
 }
 
+
 //------------------------------------
-//HELPER FUNCTIONS
+// DRIVER SELECTION HELPER FUNCTION
 //------------------------------------
 
+
+
 private fun askUserToChooseDriver(): Formula1? {
-    listDriverDetails()
-    if (Formula1API.numberOfDrivers() > 0) {
-        val note = Formula1API.findDriver(readNextInt("\nEnter the id of the driver: "))
-        if (note != null) {
-            if (formula1.isDriverInTheSystem) {
-                println("Driver is in the System")
+    listDriversTeam()
+    if (formula1API.numberOfDrivers() > 0) {
+        val driver = formula1API.findDriver(readNextInt("\nEnter the id of the driver: "))
+        if (driver != null) {
+            if (!driver.wasDriverAdded) {
+                println("Driver is NOT in the system.")
             } else {
-                return driver
+                return driver // chosen driver is valid
             }
         } else {
             println("Driver id is not valid")
         }
     }
-    return null
+    return null // selected driver is not valid
 }
+
+
+
+
+
+
+
