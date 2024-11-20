@@ -1,30 +1,52 @@
 package models
 
-data class Driver (var driverId: Int = 0,
-                   var driverDetails : String,
-                   val formula1: Any,
-                   val driverName: String,
+// Assuming 'Formula1' and 'Team' are also defined somewhere in your code.
+data class Driver(
+    var driverId: Int = 0,
+    val driverName: String,
+    var driverNationality: String,
+    val country: String = "",
+    var formula1Id: Int = 0,
+    val id: Int = 0,
+    var podiums: Int = 0,
+    var wasDriverAdded: Boolean = true,
+    var trophies: Int = 0,
+    var isDriverInSystem: Boolean = false,
+    val driverTeam: String
+) {
 
-                   //var driverTeam: String,
-                   var driverNationality: String,
-                   val country: String = "",
-                   var formula1Id: Int = 0,
-                   val id: Int = 0,
-                   var podium: Int = 0,
-                   var wasDriverAdded: Boolean = true,
-                   var trophies: Int = 0,
-                   var podiums: Int = 0
-                   var isDriverInSystem: Boolean = false) {
-
+    // Override toString to display driver status
     override fun toString(): String {
-
-        val driverContents = ""
-        if (isDriverInSystem)
-            return "$driverId: $driverContents (Complete)"
+        return if (isDriverInSystem)
+            "$driverId: $driverName (Complete)"
         else
-            return "$driverId: $driverContents (TODO)"
+            "$driverId: $driverName (TODO)"
     }
 
-
-
+    // Example of how you might initialize a list of drivers to pass to Formula1API
+    companion object {
+        fun createDriverList(): List<Driver> {
+            // Directly passing team names instead of referring to a non-existent 'team'
+            return listOf(
+                Driver(
+                    driverId = 1,
+                    driverName = "Lewis Hamilton",
+                    driverNationality = "British",
+                    driverTeam = "Mercedes"
+                ),
+                Driver(
+                    driverId = 2,
+                    driverName = "Max Verstappen",
+                    driverNationality = "Dutch",
+                    driverTeam = "Red Bull Racing"
+                ),
+                Driver(
+                    driverId = 3,
+                    driverName = "Charles Leclerc",
+                    driverNationality = "Monégasque",
+                    driverTeam = "Ferrari"
+                )
+            )
+        }
+    }
 }

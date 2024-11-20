@@ -1,13 +1,34 @@
 package controllers
 
-import ie.setu.models.Team
 import ie.setu.models.Formula1
+import ie.setu.models.Team
 import models.Driver
 
-class Formula1API {
+class Formula1API(private val drivers: MutableList<Team> = mutableListOf()) {
 
     private var formulas1 = ArrayList<Formula1>()
-    private val teams = ArrayList<Team>()
+
+    // Constructor to initialize teams (if needed)
+    init {
+        drivers.addAll(
+            listOf(
+                Team("Red Bull Racing", "United Kingdom"),
+                Team("Ferrari", "Italy"),
+                Team("Mercedes", "Germany")
+            )
+        )
+    }
+
+    // Searching for teams in the United Kingdom
+    fun searchTeamByCountry(country: String) {
+        val filteredTeams = drivers.filter { it.teamLocation.contains(country, ignoreCase = true) }
+
+        if (filteredTeams.isNotEmpty()) {
+            println(filteredTeams.joinToString("\n") { "Team: ${it.teamName}, Location: ${it.teamLocation}" })
+        } else {
+            println("No teams found in $country.")
+        }
+    }
 
     // ----------------------------------------------
     //  For Managing the ID internally in the program
@@ -45,9 +66,16 @@ class Formula1API {
     // ----------------------------------------------
     //  LISTING METHODS FOR Formula1 ArrayList
     // ----------------------------------------------
-    fun listAllDrivers(): ArrayList<Driver> = formulas1
-        //if (formulas1.isEmpty()) "No drivers stored"
-        //else formatListString(formulas1)
+    fun listAllDrivers(): List<Driver> {
+        val driverList = mutableListOf<Driver>()
+
+        drivers.forEach { team ->
+            driverList.add(Driver(driverName = team.teamName, driverNationality = "Netherlands", driverTeam = team.teamLocation))
+        }
+
+        return driverList
+    }
+
 
     fun listDriversTeam(): String =
         if (formulas1.isEmpty()) "No teams stored"
@@ -80,49 +108,14 @@ class Formula1API {
         )
 
     private fun formatListString(formula1s: List<Formula1>): String {
-
         return formula1s.joinToString("\n") { "Driver: ${it.driverName}, Team: ${it.driverTeam}, Nationality: ${it.driverNationality}" }
     }
 
     // ----------------------------------------------
-    //  TEAM METHODS
+    //  LISTING ALL TEAMS USING LAMBDA
     // ----------------------------------------------
-
-    fun addTeam(team: Team): Boolean {
-        return if (team.teamName.isNotEmpty() && team.teamLocation.isNotEmpty()) {
-            // Add the team to the list
-            teams.add(team)
-            true  // Successfully added the team
-        } else {
-            false  // Team name or location is empty, so the team is not added
-        }
-    }
-
     fun listAllTeams(): List<Team> {
-        // Generate IDs dynamically or using a counter
-        return teams.ifEmpty {
-            val teamList = mutableListOf<Team>()
-            teamList.add(Team(id = 1, teamName = "Red Bull Racing", teamLocation = "Milton Keynes"))
-            teamList.add(Team(id = 2, teamName = "Scuderia Ferrari", teamLocation = "Monza"))
-            teamList.add(Team(id = 3, teamName = "Alpine F1", teamLocation = "Oxfordshire"))
-            teamList
-        }
+        return drivers.filter { it.teamName.isNotEmpty() } // Lambda to filter non-empty team names
     }
 
-    fun deleteTeam(teamId: Int): Boolean {
-        // Find the team by its ID
-        val teamToDelete = teams.find { it.id == teamId }
-
-        return if (teamToDelete != null) {
-            // Remove the team from the list
-            teams.remove(teamToDelete)
-            true  // Successfully deleted the team
-        } else {
-            false  // Team not found, so deletion fails
-        }
-    }
-
-    fun findTeamById(teamId: Int): Team? {
-        return teams.find { it.id == teamId }
-    }
 }

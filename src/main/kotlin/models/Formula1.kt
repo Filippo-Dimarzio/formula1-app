@@ -11,7 +11,18 @@ data class Formula1(
     var wasDriverAdded: Boolean = true,
     var trophies: Int = 0,
     var podiums: Int = 0
+
+
+
 ) {
+
+
+    val formulas1 = listOf(
+        Formula1("Lewis Hamilton", "Mercedes", "British"),
+        Formula1("Max Verstappen", "Red Bull Racing", "Dutch"),
+        Formula1("Charles Leclerc", "Ferrari", "Monégasque"),
+        Formula1("Fernando Alonso", "Aston Martin", "Spanish")
+    )
 
     // Function to format the list of drivers for display
     fun formatListString(drivers: List<Formula1>): String =
