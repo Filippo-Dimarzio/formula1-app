@@ -7,7 +7,10 @@ data class Team(
     val id: Any,
 )
 
+
 {
+    constructor(teamName: String, teamLocation: String) :
+              this( "Red bull", "Milton Keynes", 0, 0)
 
 
 }

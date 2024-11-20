@@ -2,6 +2,7 @@ package controllers
 
 import ie.setu.models.Team
 import ie.setu.models.Formula1
+import models.Driver
 
 class Formula1API {
 
@@ -44,9 +45,9 @@ class Formula1API {
     // ----------------------------------------------
     //  LISTING METHODS FOR Formula1 ArrayList
     // ----------------------------------------------
-    fun listAllDrivers(): String =
-        if (formulas1.isEmpty()) "No drivers stored"
-        else formatListString(formulas1)
+    fun listAllDrivers(): ArrayList<Driver> = formulas1
+        //if (formulas1.isEmpty()) "No drivers stored"
+        //else formatListString(formulas1)
 
     fun listDriversTeam(): String =
         if (formulas1.isEmpty()) "No teams stored"

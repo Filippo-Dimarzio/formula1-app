@@ -69,7 +69,7 @@ fun mainMenu() = readNextInt(
          > |   15) List Team Details                           |
          > |   16)                                             |
          > -----------------------------------------------------
-         > | REPORT MENU FOR DRIVER                            | 
+         > | REPORT MENU                                       | 
          > |   17) Search for all drivers (by driver team)     |
          > |   18) Search Driver By Country                    |
          > |   19) .....                                       |
@@ -124,7 +124,7 @@ fun addDriver() {
 
 
 fun listDriver() {
-    if (Formula1API.numberOfDrivers() > 0) {
+    if (formula1API.numberOfDrivers() > 0) {
         val option = readNextInt(
             """
                   > --------------------------------
@@ -223,7 +223,7 @@ fun listDriverAttributes() {
     if (drivers.isNotEmpty()) {
         drivers.forEach { driver ->
 
-            println("Driver: ${driver.driverName}")
+            println("Driver: ${driver.}")
             println("Trophies: ${driver.trophies}")
             println("Podiums: ${driver.podiums}")
             println("---")
