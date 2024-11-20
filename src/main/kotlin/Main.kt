@@ -11,7 +11,12 @@ import kotlin.system.exitProcess
 
 private val formula1API = Formula1API()
 
+
+
+
 private val teamAPI = TeamAPI()
+
+
 
 fun main() = runMenu()
 
@@ -29,7 +34,7 @@ fun runMenu() {
             6 -> listDriverAttributes(formula1API)
             7 -> updateAttributesToDriver()
             8 -> deleteDriverAttributes()
-            9 -> searchDriverByCountry()
+            9 -> searchDriverByCountry("Dutch")
             10 -> markDriverExists()
 
             11 -> addTeamAndLocation()
@@ -40,11 +45,14 @@ fun runMenu() {
 
             17 -> askUserToChooseDriver()
             23 -> searchTeamByCountry("Netherlands")
-            24 -> numberOfTeams()
+            //24 -> numberOfTeams()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
+
         }
     } while (true)
+
+
 }
 
 
@@ -106,6 +114,7 @@ fun mainMenu() = readNextInt(
 
 
 
+
 //------------------------------------
 // DRIVER MENU
 //------------------------------------
@@ -114,14 +123,16 @@ fun addDriver() {
     val driverName = readNextLine("Enter a driver's name: ")
     val driverTeam = readNextLine("Enter a driver's team: ")
     val driverNationality = readNextLine("Enter a driver's nationality: ")
-    val trophies = readNextInt("Enter number of trophies: ")  // Get trophies from user
+    val trophies = readNextInt("Enter number of trophies: ")
     val podiums = readNextInt("Enter number of podiums: ")
 
     // Now no need to pass all parameters, as default values will be used for those not provided
     val isAdded = formula1API.add(Formula1(
         driverName = driverName,
         driverTeam = driverTeam,
-        driverNationality = driverNationality
+        driverNationality = driverNationality,
+        trophies = trophies,
+        podiums = podiums
 
     ))
 
@@ -293,7 +304,7 @@ fun addTeamAndLocation() {
     val teamLocation = readNextLine("Enter the team location: ")
 
     // Create and add the team
-    val newTeam = Team(teamName = teamName, teamLocation = teamLocation)
+    val newTeam = Team(teamName = teamName, teamLocation = teamLocation,)
     val isAdded = teamAPI.addTeam(newTeam) // Use TeamAPI to add the team
 
     if (isAdded) {
@@ -361,7 +372,7 @@ fun listTeamDetails() {
 //------------------------------------
 // Method to search drivers by country
 
-fun searchDriverByCountry() {
+fun searchDriverByCountry(searchString: String) {
     // Sample list of Formula1 drivers
     val formulas1 = listOf(
         Formula1("Lewis Hamilton", "Mercedes", "British"),
@@ -369,23 +380,21 @@ fun searchDriverByCountry() {
         Formula1("Charles Leclerc", "Ferrari", "Monégasque")
     )
 
-    // Call the search function
-    val result = searchDriverByCountry("British", formulas1)
-    println(result)
-}
-fun searchDriverByCountry(searchString: String, formulas1: List<Formula1>): String =
-    formatListString(
-        formulas1.filter { formula1 ->
-            formula1.driverNationality.contains(searchString, ignoreCase = true)
-        }
-    )
-
-// Method to format the list of Formula1 drivers
-fun formatListString(formula1s: List<Formula1>): String {
-    return formula1s.joinToString("\n") {
+    // Filter and format the result in one step
+    val result = formulas1.filter { formula1 ->
+        formula1.driverNationality.contains(searchString, ignoreCase = true)
+    }.joinToString("\n") {
         "Driver: ${it.driverName}, Team: ${it.driverTeam}, Nationality: ${it.driverNationality}"
     }
+
+    // Print the result
+    if (result.isNotEmpty()) {
+        println(result)
+    } else {
+        println("No drivers found with nationality $searchString")
+    }
 }
+
 
 
 
@@ -409,9 +418,14 @@ fun searchTeamByCountry(country: String) {
     }
 }
 
-fun numberOfTeams(): Int {
-    val teams = formula1API.listAllTeams()
-    return teams.size
+
+fun numberOfTeams(formulas1: List<Formula1>): Int {
+    return formulas1.count { it.driverTeam.isNotEmpty() }  // Count teams where driverTeam is not empty
+}
+
+fun numberOfTeamAchievements(formulas1: List<Formula1>): Int {
+    return formulas1.count { it.driverTeam.isNotEmpty() }
+// Count teams where driverTeam is not empty
 }
 
 

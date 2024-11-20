@@ -2,6 +2,7 @@ package controllers
 
 import ie.setu.models.Formula1
 import ie.setu.models.Team
+import ie.setu.utils.formatListString
 import models.Driver
 
 class Formula1API(private val drivers: MutableList<Team> = mutableListOf()) {
@@ -12,9 +13,9 @@ class Formula1API(private val drivers: MutableList<Team> = mutableListOf()) {
     init {
         drivers.addAll(
             listOf(
-                Team("Red Bull Racing", "United Kingdom"),
-                Team("Ferrari", "Italy"),
-                Team("Mercedes", "Germany")
+                Team("Red Bull Racing", "United Kingdom",),
+                Team("Ferrari", "Italy",),
+                Team("Mercedes", "Germany",)
             )
         )
     }
@@ -94,21 +95,21 @@ class Formula1API(private val drivers: MutableList<Team> = mutableListOf()) {
 
     fun numberOfTeamAchievements(): Int = formulas1.count { formula1 -> formula1.driverTeam.isNotEmpty() }
 
+    
     // ----------------------------------------------
     //  SEARCHING METHODS
     // ----------------------------------------------
     fun findDriver(id: Int): Formula1? =
         formulas1.find { formula1 -> formula1.formula1Id == id }
 
-    fun searchDriverByNationality(searchString: String): String =
-        formatListString(
-            formulas1.filter { formula1 ->
-                formula1.driverNationality.contains(searchString, ignoreCase = true)
-            }
-        )
+    fun searchDriverByCountry(searchString: String): String {
+        val result = formulas1.filter { formula1 ->
+            formula1.driverNationality.contains(searchString, ignoreCase = true)
+        }.joinToString("\n") {
+            "Driver: ${it.driverName}, Team: ${it.driverTeam}, Nationality: ${it.driverNationality}"
+        }
 
-    private fun formatListString(formula1s: List<Formula1>): String {
-        return formula1s.joinToString("\n") { "Driver: ${it.driverName}, Team: ${it.driverTeam}, Nationality: ${it.driverNationality}" }
+        return if (result.isNotEmpty()) result else "No drivers found with nationality $searchString"
     }
 
     // ----------------------------------------------
