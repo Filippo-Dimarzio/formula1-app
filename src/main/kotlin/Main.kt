@@ -1,8 +1,9 @@
 package ie.setu
 
 import controllers.Formula1API
-import ie.setu.models.Team
+import ie.setu.controllers.TeamAPI
 import ie.setu.models.Formula1
+import ie.setu.models.Team
 import utils.readNextInt
 import utils.readNextLine
 import kotlin.system.exitProcess
@@ -10,7 +11,11 @@ import kotlin.system.exitProcess
 
 private val formula1API = Formula1API()
 
+private val teamAPI = TeamAPI()
+
 fun main() = runMenu()
+
+
 
 fun runMenu() {
     do {
@@ -21,10 +26,10 @@ fun runMenu() {
             4 -> deleteDriver()
 
             5 -> addAttributesToDriver()
-            6 -> listDriverAttributes()
+            6 -> listDriverAttributes(formula1API)
             7 -> updateAttributesToDriver()
             8 -> deleteDriverAttributes()
-            //9 -> searchDriverByCountry()
+            9 -> searchDriverByCountry()
             10 -> markDriverExists()
 
             11 -> addTeamAndLocation()
@@ -34,11 +39,14 @@ fun runMenu() {
             15 -> listTeamDetails()
 
             17 -> askUserToChooseDriver()
+            23 -> searchTeamByCountry("Netherlands")
+            24 -> numberOfTeams()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
     } while (true)
 }
+
 
 
 
@@ -84,8 +92,8 @@ fun mainMenu() = readNextInt(
          > |                                                   |
          > -----------------------------------------------------
          > | REPORT MENU FOR TEAM                              | 
-         > |                                                   |
-         > |                                                   |
+         > |  23) Search Team by Country                       |
+         > |  24) Check how many teams added                   |
          > |                                                   |
          > |                                                   | 
          > |                                                   |
@@ -95,6 +103,8 @@ fun mainMenu() = readNextInt(
          > -----------------------------------------------------  
          > ==>> """.trimMargin(">")
 )
+
+
 
 //------------------------------------
 // DRIVER MENU
@@ -217,13 +227,11 @@ fun addAttributesToDriver() {
     }
 }
 
-
-fun listDriverAttributes() {
-    val drivers = formula1API.listAllDrivers()  // Get the list of drivers from API
+fun listDriverAttributes(formula1API: Formula1API) {
+    val drivers = formula1API.listAllDrivers() // Get the list of drivers
     if (drivers.isNotEmpty()) {
         drivers.forEach { driver ->
-
-            println("Driver: ${driver.}")
+            println("Driver: ${driver.driverName}")
             println("Trophies: ${driver.trophies}")
             println("Podiums: ${driver.podiums}")
             println("---")
@@ -232,8 +240,6 @@ fun listDriverAttributes() {
         println("No drivers found.")
     }
 }
-
-
 
 fun updateAttributesToDriver() {
     val driver = askUserToChooseDriver()
@@ -286,11 +292,9 @@ fun addTeamAndLocation() {
     val teamName = readNextLine("Enter the team name: ")
     val teamLocation = readNextLine("Enter the team location: ")
 
-    // Create the team with the provided name and location
+    // Create and add the team
     val newTeam = Team(teamName = teamName, teamLocation = teamLocation)
-
-    // Add the new team to the API
-    val isAdded = formula1API.addTeam(newTeam)
+    val isAdded = teamAPI.addTeam(newTeam) // Use TeamAPI to add the team
 
     if (isAdded) {
         println("Team added successfully.")
@@ -300,10 +304,8 @@ fun addTeamAndLocation() {
 }
 
 
-
-
 fun listTeamLocation() {
-    val teams = formula1API.listAllTeams()  // Use the listAllTeams method of Formula1API
+    val teams = teamAPI.getAllTeams() // Use TeamAPI to get all teams
     if (teams.isNotEmpty()) {
         teams.forEach { team ->
             println("Team: ${team.teamName}, Location: ${team.teamLocation}")
@@ -312,44 +314,38 @@ fun listTeamLocation() {
         println("No teams found.")
     }
 }
-
-
-
 
 fun updateTeamDetails() {
-    listTeamDetails()  // List all teams
+    listTeamDetails() // List all teams
     val teamId = readNextInt("Enter the team ID to update: ")
-    val team = formula1API.findTeamById(teamId)
-
-    val newTeamName = readNextLine("Enter new team name: ")
-    val newLocation = readNextLine("Enter new location: ")
+    val team = teamAPI.findTeamById(teamId) // Use TeamAPI to find the team
 
     if (team != null) {
+        val newTeamName = readNextLine("Enter new team name: ")
+        val newLocation = readNextLine("Enter new location: ")
+
         team.teamName = newTeamName
-    }
-    if (team != null) {
         team.teamLocation = newLocation
+
+        println("Team updated successfully.")
+    } else {
+        println("Team with ID $teamId not found.")
     }
-
-    println("Team updated successfully.")
 }
-
 
 fun deleteTeam() {
-    listTeamDetails()  // List all teams
+    listTeamDetails() // List all teams
     val teamId = readNextInt("Enter the team ID to delete: ")
 
-    if (formula1API.deleteTeam(teamId)) {  // Assuming deleteTeam method exists in Formula1API
+    if (teamAPI.deleteTeam(teamId)) { // Use TeamAPI to delete the team
         println("Team deleted successfully.")
     } else {
-        println("Failed to delete team.")
+        println("Failed to delete team. Team with ID $teamId not found.")
     }
 }
 
-
-
 fun listTeamDetails() {
-    val teams = formula1API.listAllTeams()  // Assuming it returns a list of teams
+    val teams = teamAPI.getAllTeams() // Use TeamAPI to get all teams
 
     if (teams.isNotEmpty()) {
         teams.forEach { team ->
@@ -359,18 +355,67 @@ fun listTeamDetails() {
         println("No teams found.")
     }
 }
-
-
 
 //------------------------------------
 //DRIVER REPORTS MENU
 //------------------------------------
+// Method to search drivers by country
+
+fun searchDriverByCountry() {
+    // Sample list of Formula1 drivers
+    val formulas1 = listOf(
+        Formula1("Lewis Hamilton", "Mercedes", "British"),
+        Formula1("Max Verstappen", "Red Bull Racing", "Dutch"),
+        Formula1("Charles Leclerc", "Ferrari", "Monégasque")
+    )
+
+    // Call the search function
+    val result = searchDriverByCountry("British", formulas1)
+    println(result)
+}
+fun searchDriverByCountry(searchString: String, formulas1: List<Formula1>): String =
+    formatListString(
+        formulas1.filter { formula1 ->
+            formula1.driverNationality.contains(searchString, ignoreCase = true)
+        }
+    )
+
+// Method to format the list of Formula1 drivers
+fun formatListString(formula1s: List<Formula1>): String {
+    return formula1s.joinToString("\n") {
+        "Driver: ${it.driverName}, Team: ${it.driverTeam}, Nationality: ${it.driverNationality}"
+    }
+}
 
 
 
 //------------------------------------
 //TEAM REPORTS MENU
 //------------------------------------
+
+fun searchTeamByCountry(country: String) {
+    // Assuming formula1API.listAllTeams() returns a List<Team>
+    val teams = formula1API.listAllTeams()
+
+    // Use lambda to filter the teams by country in teamLocation
+    val filteredTeams = teams.filter { it.teamLocation.contains(country, ignoreCase = true) }
+
+    // Check if we found any matching teams and print them
+    if (filteredTeams.isNotEmpty()) {
+        // Print team details using joinToString to format output
+        println(filteredTeams.joinToString("\n") { "Team: ${it.teamName}, Location: ${it.teamLocation}" })
+    } else {
+        println("No teams found in $country.")
+    }
+}
+
+fun numberOfTeams(): Int {
+    val teams = formula1API.listAllTeams()
+    return teams.size
+}
+
+
+
 
 
 //------------------------------------
