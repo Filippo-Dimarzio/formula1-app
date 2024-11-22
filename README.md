@@ -3,7 +3,8 @@
 
 **Description:**  
 
-- This is a menu-driven app made on Formula 1. It includes a CRUD methods for adding a Driver, it's Achievements and Team. 
+- This is a menu-driven app made on the topic of Formula 1.
+- It includes a CRUD methods for adding a Driver, it's Achievements and Team. 
 - It has a menu which the user can select from as a way to create their own personalized driver or team.
 - Using XML and JSON the data gets kept inside a XML file using Persistence so that data doesn't get lost.
 - The app also includes JUnit5 Tests as a way to test that methods work.
