@@ -6,6 +6,7 @@ data class Team(
     var teamId: Int = 0, // Default value for teamId
     val id: Any = 0, // Default value for id
     val teamAchievements: Int = 0 // Default value for teamAchievements
+
 )
 
 fun main() {
