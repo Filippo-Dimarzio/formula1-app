@@ -10,27 +10,19 @@ import kotlin.system.exitProcess
 
 
 private val formula1API = Formula1API()
-
-
-
-
 private val teamAPI = TeamAPI()
 
-
-
 fun main() = runMenu()
-
-
 
 fun runMenu() {
     do {
         when (val option = mainMenu()) {
-            1 -> addDriver()
+            1 -> addDriver(0)
             2 -> listDriver()
             3 -> updateDriver()
             4 -> deleteDriver()
 
-            5 -> addAttributesToDriver()
+            //5 -> addAttributesToDriver()
             6 -> listDriverAttributes(formula1API)
             7 -> updateAttributesToDriver()
             8 -> deleteDriverAttributes()
@@ -44,8 +36,10 @@ fun runMenu() {
             15 -> listTeamDetails()
 
             17 -> askUserToChooseDriver()
-            23 -> searchTeamByCountry("Netherlands")
-            //24 -> numberOfTeams()
+            18 -> searchTeamByCountry("Netherlands")
+            //19 -> numberOfTeams()
+            20 -> save()
+            21 -> load()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
 
@@ -89,8 +83,8 @@ fun mainMenu() = readNextInt(
          > |   17) Search for all drivers (by driver team)     |
          > |   18) Search Driver By Country                    |
          > |   19) .....                                       |
-         > |   20) .....                                       |
-         > |   21) .....                                       |
+         > |   20) Save Drivers                                |
+         > |   21) Load Drivers                                |
          > -----------------------------------------------------  
          > | REPORT MENU FOR ATTRIBUTES                        |                                
          > |   22) Search for all driver (by Podium Number)    |
@@ -119,7 +113,7 @@ fun mainMenu() = readNextInt(
 // DRIVER MENU
 //------------------------------------
 
-fun addDriver() {
+fun addDriver(id: Int) {
     val driverName = readNextLine("Enter a driver's name: ")
     val driverTeam = readNextLine("Enter a driver's team: ")
     val driverNationality = readNextLine("Enter a driver's nationality: ")
@@ -127,14 +121,17 @@ fun addDriver() {
     val podiums = readNextInt("Enter number of podiums: ")
 
     // Now no need to pass all parameters, as default values will be used for those not provided
-    val isAdded = formula1API.add(Formula1(
-        driverName = driverName,
-        driverTeam = driverTeam,
-        driverNationality = driverNationality,
-        trophies = trophies,
-        podiums = podiums
+    val isAdded = formula1API.add(
+        Formula1(
+            driverName = driverName,
+            driverTeam = driverTeam,
+            driverNationality = driverNationality,
+            trophies = trophies,
+            podiums = podiums,
+            id = 0 // Added missing id parameter
+        )
+    )
 
-    ))
 
     if (isAdded) {
         println("Driver added successfully.")
@@ -224,19 +221,32 @@ fun deleteDriver() {
 // ATTRIBUTES MENU
 //------------------------------------
 
-fun addAttributesToDriver() {
-    val driver = askUserToChooseDriver()
+/*fun addAttributesToDriver() {
+    val driver = askUserToChooseDriver() // Get the driver object
     if (driver != null) {
-        driver.trophies = readNextInt("Enter the number of trophies: ")
-        driver.podiums = readNextInt("Enter the number of podiums: ")
+        if (driver.id != null) {  // Check if the driver's ID is not null
+            // Update the driver's attributes
+            driver.trophies = readNextInt(""Enter the number of trophies: ")
+            driver.podiums = readNextInt("Enter the number of podiums: ")
 
-        if (formula1API.update(driver.id, driver)) {
-            println("Driver attributes added successfully.")
+            // Pass the updated driver object to the update() method
+            if (formula1API.update(driver)) {
+                println("Driver attributes added successfully.")
+            } else {
+                println("Failed to add driver attributes.")
+            }
         } else {
-            println("Failed to add driver attributes.")
+            println("Driver ID is invalid.")
         }
+    } else {
+        println("No driver selected.")
     }
 }
+
+*/
+
+
+
 
 fun listDriverAttributes(formula1API: Formula1API) {
     val drivers = formula1API.listAllDrivers() // Get the list of drivers
@@ -255,13 +265,13 @@ fun listDriverAttributes(formula1API: Formula1API) {
 fun updateAttributesToDriver() {
     val driver = askUserToChooseDriver()
     if (driver != null) {
-        driver.trophies = readNextInt("Enter the new number of trophies: ")
-        driver.podiums = readNextInt("Enter the new number of podiums: ")
+        driver.trophies = readNextInt("Enter the number of trophies: ")
+        driver.podiums = readNextInt("Enter the number of podiums: ")
 
-        if (formula1API.update(driver.id, driver)) {
-            println("Driver attributes updated successfully.")
+        if (formula1API.update(driver.id, driver)) { // Pass both id and driver object
+            println("Driver attributes added successfully.")
         } else {
-            println("Failed to update driver attributes.")
+            println("Failed to add driver attributes.")
         }
     }
 }
@@ -282,6 +292,7 @@ fun deleteDriverAttributes() {
 }
 
 fun markDriverExists() {
+
     val driver = askUserToChooseDriver()
     if (driver != null) {
         driver.wasDriverAdded = true
@@ -375,9 +386,9 @@ fun listTeamDetails() {
 fun searchDriverByCountry(searchString: String) {
     // Sample list of Formula1 drivers
     val formulas1 = listOf(
-        Formula1("Lewis Hamilton", "Mercedes", "British"),
-        Formula1("Max Verstappen", "Red Bull Racing", "Dutch"),
-        Formula1("Charles Leclerc", "Ferrari", "Monégasque")
+        Formula1("Lewis Hamilton", "Mercedes", "British", id = 0),
+        Formula1("Max Verstappen", "Red Bull Racing", "Dutch", id = 0),
+        Formula1("Charles Leclerc", "Ferrari", "Monégasque", id = 0)
     )
 
     // Filter and format the result in one step
@@ -394,8 +405,6 @@ fun searchDriverByCountry(searchString: String) {
         println("No drivers found with nationality $searchString")
     }
 }
-
-
 
 
 //------------------------------------
@@ -419,29 +428,6 @@ fun searchTeamByCountry(country: String) {
 }
 
 
-fun numberOfTeams(formulas1: List<Formula1>): Int {
-    return formulas1.count { it.driverTeam.isNotEmpty() }  // Count teams where driverTeam is not empty
-}
-
-fun numberOfTeamAchievements(formulas1: List<Formula1>): Int {
-    return formulas1.count { it.driverTeam.isNotEmpty() }
-// Count teams where driverTeam is not empty
-}
-
-
-
-
-
-//------------------------------------
-// EXIT APP
-//------------------------------------
-
-fun exitApp() {
-    println("Exiting the application. Goodbye!")
-    exitProcess(0)
-}
-
-
 //------------------------------------
 // DRIVER SELECTION HELPER FUNCTION
 //------------------------------------
@@ -462,3 +448,39 @@ private fun askUserToChooseDriver(): Formula1? {
     }
     return null // selected driver is not valid
 }
+
+
+
+
+//Save and Load methods
+fun save() {
+    try {
+        // Corrected file name as a string literal
+        formula1API.save("formula1.xml")
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun load() {
+    try {
+        // You may need to pass a filename here if required
+        formula1API.load("formula1.xml")
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
+    }
+}
+
+
+
+
+//------------------------------------
+// EXIT APP
+//------------------------------------
+
+fun exitApp() {
+    println("Exiting the application. Goodbye!")
+    exitProcess(0)
+}
+
+
