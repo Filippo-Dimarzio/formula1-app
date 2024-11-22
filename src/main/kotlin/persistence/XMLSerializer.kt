@@ -10,10 +10,10 @@ abstract class XMLSerializer(private val file: File) : Serializer {
 
     @Throws(Exception::class)
     override fun read(): Any {
-        val xStream = XStream(DomDriver())
-        xStream.allowTypes(arrayOf(Formula1::class.java)) // Allow Formula1 type
+        val xStream = XStream(DomDriver())  // Create an instance of XStream using DomDriver
+        xStream.allowTypes(arrayOf(Formula1::class.java))  // Allow Formula1 type for deserialization
         FileReader(file).use { inputStream ->
-            return xStream.fromXML(inputStream) // Use fromXML for reading objects
+            return xStream.fromXML(inputStream) // Deserialize from XML file to objects
         }
     }
 
@@ -23,30 +23,27 @@ abstract class XMLSerializer(private val file: File) : Serializer {
 
     @Throws(Exception::class)
     override fun write(formulas1: ArrayList<Formula1>) {
-        val xStream = XStream(DomDriver())
+        val xStream = XStream(DomDriver())  // Create an instance of XStream using DomDriver
         FileWriter(file).use { outputStream ->
-            xStream.toXML(obj, outputStream) // Use toXML for writing objects
+            xStream.toXML(formulas1, outputStream)  // Serialize ArrayList<Formula1> to XML file
         }
     }
 
-    // Placeholder filter function to process objects
+    // Optional filter function for data processing before serialization
     fun filter(obj: Any): Any {
-        // Implement filtering logic as needed
-        // For now, just return the object as is
+
         return obj
     }
 }
 
-
-
 // Functions to load and store Formula1 objects
 
 @Throws(Exception::class)
-fun load(serializer: XMLSerializer) {
-    var formulas1 = serializer.read() as ArrayList<Formula1> // Load as ArrayList<Formula1>
+fun load(serializer: XMLSerializer): ArrayList<Formula1> {
+    return serializer.read() as ArrayList<Formula1> // Load as ArrayList<Formula1>
 }
 
 @Throws(Exception::class)
 fun store(serializer: XMLSerializer, drivers: ArrayList<Formula1>) {
-    serializer.write(drivers) // Store ArrayList<Formula1> objects
+    serializer.write(drivers) // Store ArrayList<Formula1> objects to XML
 }
