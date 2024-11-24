@@ -11,8 +11,8 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.codehaus.jettison:jettison:1.4.1")
-    implementation ("com.thoughtworks.xstream:xstream:1.4.18")
+    implementation("org.codehaus.jettison:jettison:1.5.4")
+    implementation ("com.thoughtworks.xstream:xstream:1.4.21")
 
 }
 

@@ -1,49 +1,49 @@
 package persistence
 
+
+import com.thoughtworks.xstream.io.xml.DomDriver
 import ie.setu.models.Formula1
 import ie.setu.persistence.Serializer
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 
+
+
 abstract class XMLSerializer(private val file: File) : Serializer {
+
 
     @Throws(Exception::class)
     override fun read(): Any {
-        val xStream = XStream(DomDriver())  // Create an instance of XStream using DomDriver
-        xStream.allowTypes(arrayOf(Formula1::class.java))  // Allow Formula1 type for deserialization
+        val xStream = XStream(DomDriver()) // Use DomDriver for XML deserialization
+        xStream.allowTypes(arrayOf(Formula1::class.java)) // Allow Formula1 type for deserialization
         FileReader(file).use { inputStream ->
-            return xStream.fromXML(inputStream) // Deserialize from XML file to objects
+            return xStream.fromXML(inputStream) // Deserialize XML content into objects
         }
     }
 
-    private fun DomDriver(): Any {
-
-    }
 
     @Throws(Exception::class)
     override fun write(formulas1: ArrayList<Formula1>) {
-        val xStream = XStream(DomDriver())  // Create an instance of XStream using DomDriver
+        val xStream = XStream(DomDriver()) // Use DomDriver for XML serialization
         FileWriter(file).use { outputStream ->
-            xStream.toXML(formulas1, outputStream)  // Serialize ArrayList<Formula1> to XML file
+            xStream.toXML(formulas1, outputStream) // Serialize ArrayList<Formula1> to XML file
         }
     }
 
-    // Optional filter function for data processing before serialization
-    fun filter(obj: Any): Any {
 
-        return obj
+    fun filter(obj: Any): Any {
+        return obj // Modify or filter the object if needed before serialization
     }
 }
 
-// Functions to load and store Formula1 objects
-
 @Throws(Exception::class)
 fun load(serializer: XMLSerializer): ArrayList<Formula1> {
-    return serializer.read() as ArrayList<Formula1> // Load as ArrayList<Formula1>
+    return serializer.read() as ArrayList<Formula1> // Load and cast to ArrayList<Formula1>
 }
+
 
 @Throws(Exception::class)
 fun store(serializer: XMLSerializer, drivers: ArrayList<Formula1>) {
-    serializer.write(drivers) // Store ArrayList<Formula1> objects to XML
+    serializer.write(drivers) // Serialize the ArrayList<Formula1> objects to XML file
 }
