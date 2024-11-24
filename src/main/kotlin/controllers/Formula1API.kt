@@ -1,7 +1,7 @@
 package controllers
 
+import Team
 import ie.setu.models.Formula1
-import ie.setu.models.Team
 import ie.setu.utils.formatListString
 import models.Driver
 import java.io.*

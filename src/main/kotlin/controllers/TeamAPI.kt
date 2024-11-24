@@ -1,6 +1,6 @@
 package ie.setu.controllers
 
-import ie.setu.models.Team
+import Team
 
 class TeamAPI {
     // Fixed variable name to `teams` for consistency
@@ -56,5 +56,25 @@ class TeamAPI {
     // Finds a team by its ID
     fun findTeamById(teamId: Int): Team? {
         return teams.find { it.id == teamId }
+    }
+
+    // Update team details by teamId
+    fun updateTeam(teamId: Int, updatedTeam: Team): Boolean {
+        // Retrieve the team using the teamId
+        val existingTeam = teams.find { it.id == teamId }
+
+        return if (existingTeam != null) {
+            // If the team exists, update its details with the new team information
+            existingTeam.teamName = updatedTeam.teamName
+            existingTeam.teamLocation = updatedTeam.teamLocation
+            existingTeam.teamAchievements = updatedTeam.teamAchievements
+
+            println("Team updated successfully.")
+            true // Return true to indicate that the update was successful
+        } else {
+            // If no team is found with the provided ID, return false
+            println("Team with ID $teamId not found.")
+            false // Return false as the team was not found
+        }
     }
 }

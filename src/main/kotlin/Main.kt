@@ -1,12 +1,13 @@
 package ie.setu
 
+import Team
 import controllers.Formula1API
 import ie.setu.controllers.TeamAPI
 import ie.setu.models.Formula1
-import ie.setu.models.Team
 import utils.readNextInt
 import utils.readNextLine
 import kotlin.system.exitProcess
+
 
 
 private val formula1API = Formula1API()
@@ -139,6 +140,8 @@ fun addDriver(id: Int) {
         println("Failed to add driver.")
     }
 }
+
+
 
 
 fun listDriver() {
@@ -327,15 +330,17 @@ fun addTeamAndLocation() {
 
 
 fun listTeamLocation() {
-    val teams = teamAPI.getAllTeams() // Use TeamAPI to get all teams
+    val teams = teamAPI.getAllTeams() // Fetch all teams using TeamAPI
     if (teams.isNotEmpty()) {
-        teams.forEach { team ->
-            println("Team: ${team.teamName}, Location: ${team.teamLocation}")
+        println("Teams and their locations:")
+        teams.forEach {
+            println("Team: ${it.teamName}, Location: ${it.teamLocation}")
         }
     } else {
         println("No teams found.")
     }
 }
+
 
 fun updateTeamDetails() {
     listTeamDetails() // List all teams
@@ -346,14 +351,25 @@ fun updateTeamDetails() {
         val newTeamName = readNextLine("Enter new team name: ")
         val newLocation = readNextLine("Enter new location: ")
 
-        team.teamName = newTeamName
-        team.teamLocation = newLocation
+        // Create a copy or update directly if properties are mutable
+        team.apply {
+            var teamName = newTeamName
+            var teamLocation = newLocation
+        }
 
-        println("Team updated successfully.")
+        // Update the team in the teamAPI
+        val updated = teamAPI.updateTeam(teamId, team,)
+
+        if (updated) {
+            println("Team updated successfully.")
+        } else {
+            println("Failed to update the team.")
+        }
     } else {
         println("Team with ID $teamId not found.")
     }
 }
+
 
 fun deleteTeam() {
     listTeamDetails() // List all teams
@@ -370,13 +386,14 @@ fun listTeamDetails() {
     val teams = teamAPI.getAllTeams() // Use TeamAPI to get all teams
 
     if (teams.isNotEmpty()) {
-        teams.forEach { team ->
+        for (team in teams) { // Use a traditional for loop
             println("Team: ${team.teamName}, Location: ${team.teamLocation}")
         }
     } else {
         println("No teams found.")
     }
 }
+
 
 //------------------------------------
 //DRIVER REPORTS MENU
@@ -412,20 +429,53 @@ fun searchDriverByCountry(searchString: String) {
 //------------------------------------
 
 fun searchTeamByCountry(country: String) {
-    // Assuming formula1API.listAllTeams() returns a List<Team>
+    // Get all teams from the API
     val teams = formula1API.listAllTeams()
 
-    // Use lambda to filter the teams by country in teamLocation
-    val filteredTeams = teams.filter { it.teamLocation.contains(country, ignoreCase = true) }
+    // Ensure teams list is not null
+    if (teams == null || teams.isEmpty()) {
+        println("No teams found in the database.")
+        return
+    }
 
-    // Check if we found any matching teams and print them
+    // Filter teams based on location
+    val filteredTeams = teams.filter { it.teamLocation.equals(country, ignoreCase = true) }
+
+    // Check if any teams match the criteria
     if (filteredTeams.isNotEmpty()) {
-        // Print team details using joinToString to format output
-        println(filteredTeams.joinToString("\n") { "Team: ${it.teamName}, Location: ${it.teamLocation}" })
+        println("Teams found in $country:")
+        for (team in filteredTeams) {
+            println("Team: ${team.teamName}, Location: ${team.teamLocation}")
+        }
     } else {
         println("No teams found in $country.")
     }
 }
+
+fun teamExists(teamId: Int): Boolean {
+    val team = teamAPI.findTeamById(teamId)
+    return team != null
+}
+
+fun listAllTeams() {
+    val teams = teamAPI.getAllTeams() // Get all teams from the teamAPI
+
+    if (teams.isNotEmpty()) {
+        println("All Teams Report:")
+        println("-------------------")
+        teams.forEach { team ->
+            println("Team ID: ${team.teamId}")
+            println("Team Name: ${team.teamName}")
+            println("Location: ${team.teamLocation}")
+            println("Achievements: ${team.teamAchievements}")
+            println() // Adding a blank line between teams
+        }
+    } else {
+        println("No teams found.")
+    }
+}
+
+
 
 
 //------------------------------------
