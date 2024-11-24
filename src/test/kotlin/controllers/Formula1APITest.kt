@@ -2,7 +2,6 @@ package controllers
 
 import Team
 import ie.setu.models.Formula1
-
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
