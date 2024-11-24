@@ -12,8 +12,11 @@ data class Formula1(
     var trophies: Int = 0,
     var podiums: Int = 0,
     var team: Team? = null, // Changed Any to Team? for type safety
-    val id: Int
-)
+    val id: Int,
+
+) {
+
+}
 
 // Function to calculate the number of unique teams with a non-empty driverTeam
 fun numberOfTeams(formulas1: List<Formula1>): Int {
