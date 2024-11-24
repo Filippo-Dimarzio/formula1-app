@@ -9,16 +9,15 @@ import java.io.FileReader
 import java.io.FileWriter
 
 
-
 abstract class XMLSerializer(private val file: File) : Serializer {
 
 
     @Throws(Exception::class)
     override fun read(): Any {
-        val xStream = XStream(DomDriver()) // Use DomDriver for XML deserialization
-        xStream.allowTypes(arrayOf(Formula1::class.java)) // Allow Formula1 type for deserialization
+        val xStream = XStream(DomDriver())
+        xStream.allowTypes(arrayOf(Formula1::class.java))
         FileReader(file).use { inputStream ->
-            return xStream.fromXML(inputStream) // Deserialize XML content into objects
+            return xStream.fromXML(inputStream)
         }
     }
 
