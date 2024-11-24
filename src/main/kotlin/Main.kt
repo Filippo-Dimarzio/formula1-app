@@ -36,11 +36,11 @@ fun runMenu() {
             14 -> deleteTeam()
             15 -> listTeamDetails()
 
-            17 -> askUserToChooseDriver()
-            18 -> searchTeamByCountry("Netherlands")
-            //19 -> numberOfTeams()
-            20 -> save()
-            21 -> load()
+            16 -> askUserToChooseDriver()
+            17 -> searchTeamByCountry("Netherlands")
+            //18 -> numberOfTeams()
+            19 -> save()
+            20 -> load()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
 
@@ -78,14 +78,13 @@ fun mainMenu() = readNextInt(
          > |   13) Update Team Details                         |
          > |   14) Delete Team                                 | 
          > |   15) List Team Details                           |
-         > |   16)                                             |
          > -----------------------------------------------------
          > | REPORT MENU                                       | 
-         > |   17) Search for all drivers (by driver team)     |
-         > |   18) Search Driver By Country                    |
-         > |   19) .....                                       |
-         > |   20) Save Drivers                                |
-         > |   21) Load Drivers                                |
+         > |   16) Search for all drivers (by driver team)     |
+         > |   17) Search Driver By Country                    |
+         > |   18) .....                                       |
+         > |   19) Save Drivers                                |
+         > |   20) Load Drivers                                |
          > -----------------------------------------------------  
          > | REPORT MENU FOR ATTRIBUTES                        |                                
          > |   22) Search for all driver (by Podium Number)    |

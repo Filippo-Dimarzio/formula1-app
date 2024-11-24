@@ -218,6 +218,16 @@ class Formula1API(
         return drivers.filter { it.teamName.isNotEmpty() } // Lambda to filter non-empty team names
     }
 
+    /**
+     * Loads data from a file and deserializes it into the `formulas1` list.
+     *
+     * This method reads a serialized `ArrayList<Formula1>` object from the file specified by the
+     * `fileName`. If the file exists, it will deserialize the contents into the `formulas1` list.
+     * If the file does not exist, it will print an error message.
+     *
+     * @param fileName The name of the file from which the data should be loaded.
+     * @throws Exception If an error occurs during deserialization or if the file does not exist.
+     */
     @Throws(Exception::class)
     fun load(fileName: String) {
         val file = File(fileName)
@@ -230,6 +240,16 @@ class Formula1API(
         }
     }
 
+    /**
+     * Saves the `formulas1` list to a file by serializing it.
+     *
+     * This method serializes the `formulas1` list and saves it to the specified file. If an error
+     * occurs during the process, an error message is printed. The method ensures that the list is
+     * properly serialized into a file with the provided `fileName`.
+     *
+     * @param fileName The name of the file where the data should be saved.
+     * @throws Exception If an error occurs during the serialization or file writing process.
+     */
     @Throws(Exception::class)
     fun save(fileName: String) {
         try {
