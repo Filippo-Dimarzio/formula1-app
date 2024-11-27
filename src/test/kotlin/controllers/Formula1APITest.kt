@@ -1,7 +1,7 @@
 package controllers
 
 import Team
-import ie.setu.models.Formula1
+import models.Driver
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -9,34 +9,34 @@ import org.junit.jupiter.api.Test
 
 class Formula1APITest {
 
-    private var driver1: Formula1? = null
-    private var driver2: Formula1? = null
-    private var driver3: Formula1? = null
-    private var driver4: Formula1? = null
+    private var driver1: Driver? = null
+    private var driver2: Driver? = null
+    private var driver3: Driver? = null
+    private var driver4: Driver? = null
     private var team1: Team? = null
     private var team2: Team? = null
     private var team3: Team? = null
     private var team4: Team? = null
 
-    private val listOfDrivers = mutableListOf<Formula1>()
+    private val listOfDrivers = mutableListOf<Driver>()
     private val listOfTeams = mutableListOf<Team>()
 
     @BeforeEach
     fun setup() {
-        driver1 = Formula1("Max Verstappen", "Red Bull Racing", "Dutch", "Netherlands", id = 0)
-        driver2 = Formula1("Charles Leclerc", "Ferrari", "Monegasque", "Monaco", id = 1)
-        driver3 = Formula1("Lewis Hamilton", "Mercedes", "British", "United Kingdom", id = 2)
-        driver4 = Formula1("Lando Norris", "McLaren", "British", "United Kingdom", id = 3)
+        driver1 = Driver(driverId = 0, driverName = "Max Verstappen", driverNationality = "Dutch", teamName = "Red Bull Racing", teamLocation = "Austria")
+        driver2 = Driver(driverId = 1, driverName = "Charles Leclerc", driverNationality = "Monegasque", teamName = "Ferrari", teamLocation = "Italy")
+        driver3 = Driver(driverId = 2, driverName = "Lewis Hamilton", driverNationality = "British", teamName = "Mercedes", teamLocation = "Germany")
+        driver4 = Driver(driverId = 3, driverName = "Lando Norris", driverNationality = "British", teamName = "McLaren", teamLocation = "United Kingdom")
 
         listOfDrivers.add(driver1!!)
         listOfDrivers.add(driver2!!)
         listOfDrivers.add(driver3!!)
         listOfDrivers.add(driver4!!)
 
-        team1 = Team("Red Bull Racing", "Austria", 0)
-        team2 = Team("Ferrari", "Italy", 1)
-        team3 = Team("Mercedes", "Germany", 2)
-        team4 = Team("McLaren", "United Kingdom", 3)
+        team1 = Team(teamName = "Red Bull Racing", teamLocation = "Austria", teamId = 0)
+        team2 = Team(teamName = "Ferrari", teamLocation = "Italy", teamId = 1)
+        team3 = Team(teamName = "Mercedes", teamLocation = "Germany", teamId = 2)
+        team4 = Team(teamName = "McLaren", teamLocation = "United Kingdom", teamId = 3)
 
         listOfTeams.add(team1!!)
         listOfTeams.add(team2!!)
@@ -52,7 +52,7 @@ class Formula1APITest {
 
     @Test
     fun `adding a Driver to a Driver list to ArrayList`() {
-        val newDriver = Formula1("Checo Perez", "Red Bull Racing", "Mexican", "Mexico", id = 4)
+        val newDriver = Driver(driverId = 4, driverName = "Sergio Perez", driverNationality = "Mexican", driverTeam = "Red Bull Racing", teamLocation = "Mexico", teamName = "Red Bull Racing" )
         assertTrue(listOfDrivers.add(newDriver))
         assertEquals(5, listOfDrivers.size)
         assertEquals(newDriver, listOfDrivers.last())
@@ -62,8 +62,8 @@ class Formula1APITest {
 
     @Test
     fun `adding a Driver to an empty list adds to ArrayList`() {
-        val newDriver = Formula1("Fernando Alonso", "Aston Martin", "Spanish", "Spain", id = 5)
-        val emptyDriverList = mutableListOf<Formula1>()
+        val newDriver = Driver(driverId = 0, driverName = "Fernando Alonso", driverNationality = "Spanish", driverTeam = "Aston Martin", teamLocation = "Spain")
+        val emptyDriverList = mutableListOf<Driver>()
         assertEquals(0, emptyDriverList.size)
         assertTrue(emptyDriverList.add(newDriver))
         assertEquals(1, emptyDriverList.size)
@@ -74,7 +74,7 @@ class Formula1APITest {
 
     @Test
     fun `listAllDrivers returns No Drivers Stored message when ArrayList is empty`() {
-        val emptyDriverList = mutableListOf<Formula1>()
+        val emptyDriverList = mutableListOf<Driver>()
         assertEquals(0, emptyDriverList.size)
         val result = if (emptyDriverList.isEmpty()) "No drivers stored" else emptyDriverList.joinToString(", ")
         assertTrue(result.lowercase().contains("no drivers"))
@@ -94,7 +94,7 @@ class Formula1APITest {
 
     @Test
     fun `adding a Team to a Team list to ArrayList`() {
-        val newTeam = Team("Alpine", "France", 0)
+        val newTeam = Team(teamName = "Alpine", teamLocation = "France", teamId = 4)
         assertTrue(listOfTeams.add(newTeam))
         assertEquals(5, listOfTeams.size)
         assertEquals(newTeam, listOfTeams.last())

@@ -1,10 +1,13 @@
 package ie.setu.controllers
 
 import Team
+import ie.setu.persistence.Serializer
 
-class TeamAPI {
+class TeamAPI(serializerType: Serializer) {
+
     // Fixed variable name to `teams` for consistency
-    private val teams = mutableListOf<Team>()
+    private var teams = mutableListOf<Team>()
+    private var serializer: Serializer = serializerType
 
     // Adds a team with a unique ID
     fun addTeam(team: Team): Boolean {
@@ -77,4 +80,29 @@ class TeamAPI {
             false // Return false as the team was not found
         }
     }
-}
+    
+    fun numberOfTeams(): Int {
+        return teams.size 
+    }
+
+    fun findTeam(i: Int): Team? {
+        return teams.getOrNull(i) // Returns the team at index i, or null if the index is invalid
+    }
+
+    fun add(team: Team) {
+        teams.add(team)
+    }
+
+
+    @Throws(Exception::class)
+    fun load() {
+        teams = serializer.read() as ArrayList<Team>
+    }
+
+    @Throws(Exception::class)
+    fun store(s: String) {
+        serializer.write(teams)
+
+
+    }
+    }
