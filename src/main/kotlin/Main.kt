@@ -11,7 +11,8 @@ import java.io.File
 import kotlin.system.exitProcess
 
 
-private val driver1API= DriverAPI(teamAPI = mutableListOf(teamAPI),JSONSerializer(File("team.json")))
+private val driver1API= DriverAPI(MutableList<TeamAPI>(),JSONSerializer(File("driver.json")))
+
 private val teamAPI = TeamAPI(JSONSerializer(File("team.json")))
 
 
@@ -480,9 +481,6 @@ fun listAllTeams() {
     }
 }
 
-
-
-
 //------------------------------------
 // DRIVER SELECTION HELPER FUNCTION
 //------------------------------------
@@ -504,9 +502,6 @@ private fun askUserToChooseDriver(): Driver? {
     return null // selected driver is not valid
 }
 
-
-
-
 //Save and Load methods
 fun saveDriverFile() {
     try {
@@ -525,9 +520,6 @@ fun loadDriverFile() {
         System.err.println("Error reading from file: $e")
     }
 }
-
-
-
 
 //------------------------------------
 // EXIT APP
