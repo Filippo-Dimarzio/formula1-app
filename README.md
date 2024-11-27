@@ -32,6 +32,12 @@
 
 - This program has been made on the language Kotlin.
 - I've used various Java Libraries as a way to facilitate the UserInput, ArrayList and many more.
+-“JUnit 5” https://junit.org/junit5/
+
+For   linting the project
+- “Maven” https://maven.apache.org/
+- “Gradle” https://gradle.org/
+- Jacoco
 
 
 
