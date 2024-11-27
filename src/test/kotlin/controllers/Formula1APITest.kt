@@ -23,10 +23,10 @@ class Formula1APITest {
 
     @BeforeEach
     fun setup() {
-        driver1 = Driver(driverId = 0, driverName = "Max Verstappen", driverNationality = "Dutch", teamName = "Red Bull Racing", teamLocation = "Austria")
-        driver2 = Driver(driverId = 1, driverName = "Charles Leclerc", driverNationality = "Monegasque", teamName = "Ferrari", teamLocation = "Italy")
-        driver3 = Driver(driverId = 2, driverName = "Lewis Hamilton", driverNationality = "British", teamName = "Mercedes", teamLocation = "Germany")
-        driver4 = Driver(driverId = 3, driverName = "Lando Norris", driverNationality = "British", teamName = "McLaren", teamLocation = "United Kingdom")
+        driver1 = Driver(driverId = 0, driverName = "Max Verstappen", driverNationality = "Dutch", teamName = "Red Bull Racing", teamLocation = "Austria", driverTeam = "Red Bull Racing")
+        driver2 = Driver(driverId = 1, driverName = "Charles Leclerc", driverNationality = "Monegasque", teamName = "Ferrari", teamLocation = "Italy", driverTeam =  "Ferrari",)
+        driver3 = Driver(driverId = 2, driverName = "Lewis Hamilton", driverNationality = "British", teamName = "Mercedes", teamLocation = "Germany", driverTeam = "Mercedes")
+        driver4 = Driver(driverId = 3, driverName = "Lando Norris", driverNationality = "British", teamName = "McLaren", teamLocation = "United Kingdom", driverTeam = "Mclaren")
 
         listOfDrivers.add(driver1!!)
         listOfDrivers.add(driver2!!)
@@ -62,7 +62,7 @@ class Formula1APITest {
 
     @Test
     fun `adding a Driver to an empty list adds to ArrayList`() {
-        val newDriver = Driver(driverId = 0, driverName = "Fernando Alonso", driverNationality = "Spanish", driverTeam = "Aston Martin", teamLocation = "Spain")
+        val newDriver = Driver(driverId = 0, driverName = "Fernando Alonso", driverNationality = "Spanish", driverTeam = "Aston Martin", teamLocation = "Spain", teamName = "Aston Martin")
         val emptyDriverList = mutableListOf<Driver>()
         assertEquals(0, emptyDriverList.size)
         assertTrue(emptyDriverList.add(newDriver))

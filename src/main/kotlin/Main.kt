@@ -23,29 +23,33 @@ fun main() = runMenu()
 fun runMenu() {
     do {
         when (val option = mainMenu()) {
-            1 -> addDriver(0)
-            2 -> listDriver()
-            3 -> updateDriver()
-            4 -> deleteDriver()
+            1 -> addDriver(0) //works
+            2 -> listDriver() //works
+            3 -> updateDriver() //works
+            4 -> deleteDriver() //works
 
-            //5 -> addAttributesToDriver()
+            5 -> addAttributesToDriver()
             6 -> listDriverAttributes(driver1API)
             7 -> updateAttributesToDriver()
             8 -> deleteDriverAttributes()
             //9 -> searchDriverByCountry()
             10 -> markDriverExists()
 
-            11 -> addTeamAndLocation()
-            12 -> listTeamLocation()
-            13 -> updateTeamDetails()
-            14 -> deleteTeam()
-            15 -> listTeamDetails()
+            11 -> addTeamAndLocation() //works
+            12 -> listTeamLocation() //works
+            13 -> updateTeamDetails() //works
+            14 -> deleteTeam() //works
+            15 -> listTeamDetails() //works
 
             16 -> askUserToChooseDriver()
-            17 -> searchTeamByCountry("United Kingdom")
-            //18 -> numberOfTeams()
-            19 -> saveDriverFile()
-            20 -> loadDriverFile()
+            //17 -> searchDriverByCountry(driver1API)
+
+            18 -> saveDriverFile()
+            19 -> loadDriverFile()
+            21 -> searchDriverByPodiumNumber(10)
+            22 -> searchTeamByCountry("United Kingdom")
+            23 -> checkTeamExist(0)
+            24 -> checkTeamsCount()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
 
@@ -84,25 +88,19 @@ fun mainMenu() = readNextInt(
          > |   15) List Team Details                           |
          > -----------------------------------------------------
          > | REPORT MENU                                       | 
-         > |   16) Search for all drivers (by driver team)     |
-         > |   17) Search Driver By Country                    |
-         > |   18) .....                                       |
-         > |   19) Save Drivers                                |
-         > |   20) Load Drivers                                |
+         > |   16) Ask User To Choose Driver (by driver team)  |
+         > |   17) Search Driver By Country  //don't work yet  | 
+         > |   18) Save Drivers                                |
+         > |   19) Load Drivers                                |
          > -----------------------------------------------------  
          > | REPORT MENU FOR ATTRIBUTES                        |                                
-         > |   22) Search for all driver (by Podium Number)    |
-         > |                                                   |
-         > |                                                   |
-         > |                                                   |
+         > |   20) Search for all driver (by Podium Number)    |
          > |                                                   |
          > -----------------------------------------------------
          > | REPORT MENU FOR TEAM                              | 
-         > |  23) Search Team by Country                       |
+         > |  22) Search Team by Country                       |
+         > |  23) Check Team exist                             |
          > |  24) Check how many teams added                   |
-         > |                                                   |
-         > |                                                   | 
-         > |                                                   |
          > |                                                   |
          > -----------------------------------------------------  
          > |   0) Exit                                         |
@@ -218,16 +216,16 @@ fun deleteDriver() {
 // ATTRIBUTES MENU
 //------------------------------------
 
-/*fun addAttributesToDriver() {
+fun addAttributesToDriver() {
     val driver = askUserToChooseDriver() // Get the driver object
     if (driver != null) {
         if (driver.id != null) {  // Check if the driver's ID is not null
             // Update the driver's attributes
-            driver.trophies = readNextInt(""Enter the number of trophies: ")
+            driver.trophies = readNextInt("Enter the number of trophies: ")
             driver.podiums = readNextInt("Enter the number of podiums: ")
 
-            // Pass the updated driver object to the update() method
-            if (driver1API.update(driver)) {
+            // Pass the updated driver object and ID to the update() method
+            if (driver1API.update(driver.id, driver)) {
                 println("Driver attributes added successfully.")
             } else {
                 println("Failed to add driver attributes.")
@@ -238,8 +236,9 @@ fun deleteDriver() {
     } else {
         println("No driver selected.")
     }
+}
 
- */
+
 
 
 
@@ -396,19 +395,8 @@ fun listTeamDetails() {
 // Method to search drivers by country
 
 fun searchDriverByCountry(searchString: String, driverTeam: String) {
-    // Sample list of Formula1 drivers with team-related data
-    val formulas1 = listOf(
-        Driver(
-            driverId = 0, driverName = "Lewis Hamilton", driverNationality = "British", teamName = "Mercedes AMG F1", teamLocation = "Brackley, Northamptonshire, UK", driverTeam = "Red Bull Racing"
-        ),
-        Driver(
-            driverId = 1, driverName = "Max Verstappen", driverNationality = "Dutch", teamName = "Red Bull Racing", teamLocation = "Milton Keynes, UK", driverTeam = "Red Bull Racing"
-        ),
-        Driver(
-            driverId = 2, driverName = "Oscar Piastri", driverNationality = "Australian", teamName = "McLaren Racing", teamLocation = "Woking, UK",  driverTeam = "Red Bull Racing"
-        )
-    )
-
+    // Fetch the list of drivers from the DriverAPI
+    val formulas1 = driver1API.listAllDrivers()
 
     // Filter the result by nationality and team
     val result = formulas1.filter { formula1 ->
@@ -425,6 +413,27 @@ fun searchDriverByCountry(searchString: String, driverTeam: String) {
         println("No drivers found with nationality $searchString and team $driverTeam")
     }
 }
+
+fun searchDriverByPodiumNumber(podiumNumber: Int) {
+    // Assuming driver1API has a method listAllDrivers() which returns a list of Driver objects
+    val drivers = driver1API.listAllDrivers()
+
+    // Filter drivers based on the podium number
+    val filteredDrivers = drivers.filter { driver ->
+        driver.podiums == podiumNumber
+    }
+
+    // Display the result
+    if (filteredDrivers.isNotEmpty()) {
+        println("Drivers with $podiumNumber podium(s):")
+        filteredDrivers.forEach { driver ->
+            println("Driver: ${driver.driverName}, Team: ${driver.teamName}, Podiums: ${driver.podiums}")
+        }
+    } else {
+        println("No drivers found with $podiumNumber podium(s).")
+    }
+}
+
 
 
 
@@ -457,6 +466,22 @@ fun searchTeamByCountry(country: String) {
         println("No teams found in $country.")
     }
 }
+
+
+fun checkTeamsCount() {
+    val teams = teamAPI.getAllTeams()
+    println("Number of teams: ${teams.size}")
+}
+
+fun checkTeamExist(teamId: Int) {
+    val team = teamAPI.findTeamById(teamId)
+    if (team != null) {
+        println("Team exists: ${team.teamName}, Location: ${team.teamLocation}")
+    } else {
+        println("No team found with ID $teamId")
+    }
+}
+
 
 
 fun teamExists(teamId: Int): Boolean {
@@ -530,5 +555,3 @@ fun exitApp() {
     println("Exiting the application. Goodbye!")
     exitProcess(0)
 }
-
-
