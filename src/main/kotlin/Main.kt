@@ -11,9 +11,10 @@ import java.io.File
 import kotlin.system.exitProcess
 
 
-private val driver1API= DriverAPI(MutableList<TeamAPI>(),JSONSerializer(File("driver.json")))
-
 private val teamAPI = TeamAPI(JSONSerializer(File("team.json")))
+
+private val driver1API = DriverAPI(mutableListOf(), JSONSerializer(File("driver.json")))
+
 
 
 

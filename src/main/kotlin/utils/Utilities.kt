@@ -1,9 +1,9 @@
 package ie.setu.utils
 
-import ie.setu.models.Formula1
+
 import models.Driver
 
-fun formatListString(formulas1ToFormat: List<Formula1>): String =
+fun formatListString(formulas1ToFormat: List<Driver>): String =
     formulas1ToFormat
         .joinToString(separator = "\n") { formula1 -> "$formula1" }
 
