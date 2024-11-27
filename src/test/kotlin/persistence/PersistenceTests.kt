@@ -2,7 +2,7 @@ package ie.setu.test
 
 import Team
 import ie.setu.controllers.TeamAPI
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -44,7 +44,7 @@ class Formula1Tests {
             storingTeams.add(Team(id = 1, teamName = "McLaren", teamLocation = "Woking"))
             storingTeams.add(Team(id = 2, teamName = "Ferrari", teamLocation = "Maranello"))
             storingTeams.add(Team(id = 3, teamName = "Red Bull", teamLocation = "Milton Keynes"))
-            storingTeams.(team.json)
+
 
             // Loading teams.xml into a different collection
             val loadedTeams = TeamAPI(XMLSerializer(File("team.xml")))
