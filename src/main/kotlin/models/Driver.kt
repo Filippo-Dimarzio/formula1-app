@@ -20,6 +20,6 @@ data class Driver(
         return if (isDriverInSystem)
             "$driverId: $driverName (Complete)"
         else
-            "$driverId: $driverName (TODO)"
+            "$driverId: $driverName"
     }
 }
