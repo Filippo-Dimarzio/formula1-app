@@ -29,9 +29,4 @@ class JSONSerializer(private val file: File) : Serializer {
         inputStream.close()
         return obj
     }
-
-
-
-
-
 }

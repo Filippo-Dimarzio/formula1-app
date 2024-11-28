@@ -1,6 +1,5 @@
 package persistence
 
-
 import com.thoughtworks.xstream.XStream
 import com.thoughtworks.xstream.io.xml.DomDriver
 import ie.setu.persistence.Serializer
@@ -12,7 +11,6 @@ import java.io.FileWriter
 
 class XMLSerializer(private val file: File) : Serializer {
 
-
     @Throws(Exception::class)
     override fun read(): Any {
         val xStream = XStream(DomDriver())
@@ -23,8 +21,6 @@ class XMLSerializer(private val file: File) : Serializer {
             return xStream.fromXML(inputStream)
         }
     }
-
-
     @Throws(Exception::class)
     override fun write(obj: Any?) {
         val xStream = XStream(DomDriver())
@@ -32,9 +28,5 @@ class XMLSerializer(private val file: File) : Serializer {
         outputStream.writeObject(obj)
         outputStream.close()
     }
-
-
-
-
 }
 

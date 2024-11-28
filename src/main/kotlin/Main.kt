@@ -10,7 +10,6 @@ import utils.readNextLine
 import java.io.File
 import kotlin.system.exitProcess
 
-
 private val teamAPI = TeamAPI(JSONSerializer(File("team.json")))
 
 private val driver1API = DriverAPI(mutableListOf(), JSONSerializer(File("driver.json")))
@@ -55,11 +54,7 @@ fun runMenu() {
 
         }
     } while (true)
-
-
 }
-
-
 
 fun mainMenu() = readNextInt(
     """ 
@@ -109,9 +104,6 @@ fun mainMenu() = readNextInt(
          > ==>> """.trimMargin(">")
 )
 
-
-
-
 //------------------------------------
 // DRIVER MENU
 //------------------------------------
@@ -131,10 +123,6 @@ fun addDriver(id: Int) {
         )
     )
 }
-
-
-
-
 
 fun listDriver() {
     if (driver1API.numberOfDrivers() > 0) {
@@ -158,7 +146,6 @@ fun listDriver() {
         println("Option Invalid - No drivers stored")
     }
 }
-
 
 fun listAllDrivers() = println(driver1API.listAllDrivers())
 fun listDriversTeam() = println(driver1API.listDriversTeam())
@@ -196,10 +183,6 @@ fun updateDriver() {
     }
 }
 
-
-
-
-
 fun deleteDriver() {
     listDriver()
     if (driver1API.numberOfDrivers() > 0) {
@@ -234,14 +217,6 @@ fun addAttributesToDriver() {
         println("No driver selected.")
     }
 }
-
-
-
-
-
-
-
-
 
 fun listDriverAttributes(driverAPI: DriverAPI) {
     val drivers = driverAPI.listAllDrivers() // Get the list of drivers
@@ -299,8 +274,6 @@ fun markDriverExists() {
         }
     }
 }
-
-
 //------------------------------------
 // TEAM MENU
 //------------------------------------
@@ -361,7 +334,6 @@ fun updateTeamDetails() {
 }
 
 
-
 fun deleteTeam() {
     listTeamDetails() // List all teams
     val teamId = readNextInt("Enter the team ID to delete: ")
@@ -384,7 +356,6 @@ fun listTeamDetails() {
         println("No teams found.")
     }
 }
-
 
 //------------------------------------
 //DRIVER REPORTS MENU
@@ -430,12 +401,6 @@ fun searchDriverByPodiumNumber(podiumNumber: Int) {
         println("No drivers found with $podiumNumber podium(s).")
     }
 }
-
-
-
-
-
-
 //------------------------------------
 //TEAM REPORTS MENU
 //------------------------------------
@@ -561,8 +526,6 @@ fun loadTeamFile() {
         System.err.println("Error reading from file: $e")
     }
 }
-
-
 //------------------------------------
 // EXIT APP
 //------------------------------------

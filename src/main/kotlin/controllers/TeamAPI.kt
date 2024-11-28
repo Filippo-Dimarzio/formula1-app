@@ -93,7 +93,6 @@ class TeamAPI(serializerType: Serializer) {
         teams.add(team)
     }
 
-
     @Throws(Exception::class)
     fun load(s: String) {
         teams = serializer.read() as ArrayList<Team>
@@ -102,8 +101,6 @@ class TeamAPI(serializerType: Serializer) {
     @Throws(Exception::class)
     fun store(s: String) {
         serializer.write(teams)
-
-
     }
 
     fun save(fileName: String) {

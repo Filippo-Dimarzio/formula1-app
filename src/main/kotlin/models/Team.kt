@@ -7,5 +7,4 @@ data class Team(
     val id: Int = 0,
     var teamAchievements: Int = 0,
     val drivers: List<Driver> = emptyList(),
-
 )
