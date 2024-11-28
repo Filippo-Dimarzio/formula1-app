@@ -3,15 +3,12 @@ package ie.setu
 import Team
 import controllers.DriverAPI
 import ie.setu.controllers.TeamAPI
-import io.github.oshai.kotlinlogging.KotlinLogging
 import models.Driver
 import persistence.JSONSerializer
 import utils.readNextInt
 import utils.readNextLine
 import java.io.File
 import kotlin.system.exitProcess
-
-
 
 
 private val teamAPI = TeamAPI(JSONSerializer(File("team.json")))
@@ -367,6 +364,8 @@ fun listTeamDetails() {
 //------------------------------------
 // Method to search drivers by country
 
+
+// this doesn't work but makes the next function work
 fun searchDriverByCountry(searchString: String, driverTeam: String) {
     // Fetch the list of drivers from the DriverAPI
     val formulas1 = driver1API.listAllDrivers()
@@ -499,7 +498,7 @@ private fun askUserToChooseDriver(): Driver? {
 fun saveDriverFile() {
     try {
         // Corrected file name as a string literal
-        driver1API.save("drivers.xml")
+        driver1API.save("drivers.json")
     } catch (e: Exception) {
         System.err.println("Error writing to file: $e")
     }
@@ -508,7 +507,7 @@ fun saveDriverFile() {
 fun loadDriverFile() {
     try {
         // You may need to pass a filename here if required
-        driver1API.load("drivers.xml")
+        driver1API.load("drivers.json")
     } catch (e: Exception) {
         System.err.println("Error reading from file: $e")
     }
@@ -517,7 +516,7 @@ fun loadDriverFile() {
 fun saveTeamFile() {
     try {
         // Save team data to a file
-        teamAPI.save("team.xml")
+        teamAPI.save("team.json")
     } catch (e: Exception) {
         System.err.println("Error writing to file: $e")
     }
@@ -526,7 +525,7 @@ fun saveTeamFile() {
 fun loadTeamFile() {
     try {
         // Load team data from a file
-        teamAPI.load("team.xml")
+        teamAPI.load("team.json")
     } catch (e: Exception) {
         System.err.println("Error reading from file: $e")
     }
