@@ -6,6 +6,7 @@ import models.Driver
 import persistence.XMLSerializer
 import java.io.*
 
+
 /**
  * DriverAPI provides functionalities for managing Formula1 drivers and teams,
  * including CRUD operations, searching, and listing drivers and teams.
