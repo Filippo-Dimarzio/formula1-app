@@ -29,7 +29,7 @@ fun runMenu() {
             6 -> listDriverAttributes(driver1API) //works
             7 -> updateAttributesToDriver() //works
             8 -> deleteDriverAttributes() //works
-            //9 -> searchDriverByCountry()
+            //9 -> searchDriverByNationality()
             10 -> markDriverExists() //works
 
             11 -> addTeamAndLocation() //works
@@ -114,9 +114,9 @@ fun addDriver(id: Int) {
     val driverNationality = readNextLine("Enter a driver's nationality: ")
     val trophies = readNextInt("Enter number of trophies: ")
     val podiums = readNextInt("Enter number of podiums: ")
-    val teamLocation = readNextLine("Enter the team's location: ") // New prompt for teamLocation
+    val teamLocation = readNextLine("Enter the team's location: ")
 
-    // Now no need to pass all parameters, as default values will be used for those not provided
+
     driver1API.add(
         Driver(
             driverName = driverName, driverNationality = driverNationality, id = 0, podiums = podiums, trophies = trophies, teamName = driverTeam, teamLocation = teamLocation, driverTeam = "Red Bull Racing"
@@ -153,23 +153,23 @@ fun listDriversByNationality() = println(driver1API.listDriversByNationality())
 
 
 fun updateDriver() {
-    listDriver() // List all drivers
+    listDriver()
     if (driver1API.numberOfDrivers() > 0) {
         val id = readNextInt("Enter the ID of the driver to update from index 3: ")
         val driver = driver1API.findDriver(id)
 
         if (driver != null) {
-            // Prompt for new details
+
             val driverName = readNextLine("Enter new driver name: ")
             val driverTeam = readNextLine("Enter new driver team: ")
             val driverNationality = readNextLine("Enter new driver nationality: ")
 
-            // Update the driver properties directly
+
             driver.driverName = driverName
             driver.teamName = driverTeam
             driver.driverNationality = driverNationality
 
-            // Save updates via DriverAPI
+
             if (driver1API.update(id, driver)) {
                 println("Driver updated successfully.")
             } else {
@@ -201,13 +201,12 @@ fun deleteDriver() {
 //------------------------------------
 
 fun addAttributesToDriver() {
-    val driver = askUserToChooseDriver() // Get the driver object
+    val driver = askUserToChooseDriver()
     if (driver != null) {
 
         driver.trophies = readNextInt("Enter the number of trophies: ")
         driver.podiums = readNextInt("Enter the number of podiums: ")
 
-        // Pass the updated driver object and ID to the update() method
         if (driver1API.update(driver.id, driver)) {
             println("Driver attributes added successfully.")
         } else {
@@ -238,7 +237,7 @@ fun updateAttributesToDriver() {
         driver.trophies = readNextInt("Enter the number of trophies: ")
         driver.podiums = readNextInt("Enter the number of podiums: ")
 
-        if (driver1API.update(driver.id, driver)) { // Pass both id and driver object
+        if (driver1API.update(driver.id, driver)) {
             println("Driver attributes added successfully.")
         } else {
             println("Failed to add driver attributes.")
@@ -295,7 +294,7 @@ fun addTeamAndLocation() {
 
 
 fun listTeamLocation() {
-    val teams = teamAPI.getAllTeams() // Fetch all teams using TeamAPI
+    val teams = teamAPI.getAllTeams()
     if (teams.isNotEmpty()) {
         println("Teams and their locations:")
         teams.forEach {
@@ -310,7 +309,7 @@ fun listTeamLocation() {
 fun updateTeamDetails() {
     listTeamDetails() // List all teams
     val teamId = readNextInt("Enter the team ID to update: ")
-    val team = teamAPI.findTeamById(teamId) // Use TeamAPI to find the team
+    val team = teamAPI.findTeamById(teamId)
 
     if (team != null) {
         val newTeamName = readNextLine("Enter new team name: ")
@@ -360,33 +359,14 @@ fun listTeamDetails() {
 //------------------------------------
 //DRIVER REPORTS MENU
 //------------------------------------
-// Method to search drivers by country
 
-fun searchDriverByCountry(searchString: String, driverTeam: String) {
-    // Fetch the list of drivers from the DriverAPI
-    val formulas1 = driver1API.listAllDrivers()
 
-    // Filter the result by nationality and team
-    val result = formulas1.filter { formula1 ->
-        formula1.driverNationality.contains(searchString, ignoreCase = true) &&
-                formula1.teamName.contains(driverTeam, ignoreCase = true)
-    }.joinToString("\n") {
-        "Driver: ${it.driverName}, Team: ${it.teamName}, Nationality: ${it.driverNationality}"
-    }
-
-    // Print the result
-    if (result.isNotEmpty()) {
-        println(result)
-    } else {
-        println("No drivers found with nationality $searchString and team $driverTeam")
-    }
-}
 
 fun searchDriverByPodiumNumber(podiumNumber: Int) {
-    // Assuming driver1API has a method listAllDrivers() which returns a list of Driver objects
+
     val drivers = driver1API.listAllDrivers()
 
-    // Filter drivers based on the podium number
+
     val filteredDrivers = drivers.filter { driver ->
         driver.podiums == podiumNumber
     }
@@ -406,19 +386,19 @@ fun searchDriverByPodiumNumber(podiumNumber: Int) {
 //------------------------------------
 
 fun searchTeamByCountry(country: String) {
-    // Get all teams from the API
+
     val teams = driver1API.listAllTeams()
 
-    // Ensure teams list is not null
+
     if (teams.isEmpty()) {
         println("No teams found in the database.")
         return
     }
 
-    // Filter teams based on location
+
     val filteredTeams = teams.filter { it.teamLocation.equals(country, ignoreCase = true) }
 
-    // Check if any teams match the criteria
+
     if (filteredTeams.isNotEmpty()) {
         println("Teams found in $country:")
         for (team in filteredTeams) {
@@ -446,28 +426,9 @@ fun checkTeamExist(teamId: Int) {
 
 
 
-fun teamExists(teamId: Int): Boolean {
-    val team = teamAPI.findTeamById(teamId)
-    return team != null
-}
 
-fun listAllTeams() {
-    val teams = teamAPI.getAllTeams() // Get all teams from the teamAPI
 
-    if (teams.isNotEmpty()) {
-        println("All Teams Report:")
-        println("-------------------")
-        teams.forEach { team ->
-            println("Team ID: ${team.teamId}")
-            println("Team Name: ${team.teamName}")
-            println("Location: ${team.teamLocation}")
-            println("Achievements: ${team.teamAchievements}")
-            println() // Adding a blank line between teams
-        }
-    } else {
-        println("No teams found.")
-    }
-}
+
 
 //------------------------------------
 // DRIVER SELECTION HELPER FUNCTION
@@ -481,20 +442,20 @@ private fun askUserToChooseDriver(): Driver? {
             if (!driver.wasDriverAdded) {
                 println("Driver is NOT in the system.")
             } else {
-                return driver // chosen driver is valid
+                return driver
             }
         } else {
             println("Driver id is not valid")
         }
     }
-    return null // selected driver is not valid
+    return null
 }
 
 //Save and Load methods
 fun saveDriverFile() {
     try {
-        // Corrected file name as a string literal
-        driver1API.save("drivers.xml")
+
+        driver1API.save("drivers.json")
     } catch (e: Exception) {
         System.err.println("Error writing to file: $e")
     }
@@ -502,8 +463,8 @@ fun saveDriverFile() {
 
 fun loadDriverFile() {
     try {
-        // You may need to pass a filename here if required
-        driver1API.load("drivers.xml")
+
+        driver1API.load("drivers.json")
     } catch (e: Exception) {
         System.err.println("Error reading from file: $e")
     }
@@ -512,7 +473,7 @@ fun loadDriverFile() {
 fun saveTeamFile() {
     try {
         // Save team data to a file
-        teamAPI.save("team.xml")
+        teamAPI.save("team.json")
     } catch (e: Exception) {
         System.err.println("Error writing to file: $e")
     }
@@ -521,7 +482,7 @@ fun saveTeamFile() {
 fun loadTeamFile() {
     try {
         // Load team data from a file
-        teamAPI.load("team.xml")
+        teamAPI.load("team.json")
     } catch (e: Exception) {
         System.err.println("Error reading from file: $e")
     }
