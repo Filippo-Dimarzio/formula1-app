@@ -16,8 +16,6 @@ private val teamAPI = TeamAPI(JSONSerializer(File("team.json")))
 private val driver1API = DriverAPI(mutableListOf(), JSONSerializer(File("driver.json")))
 
 
-
-
 fun main() = runMenu()
 
 fun runMenu() {
@@ -28,12 +26,12 @@ fun runMenu() {
             3 -> updateDriver() //works
             4 -> deleteDriver() //works
 
-            5 -> addAttributesToDriver()
-            6 -> listDriverAttributes(driver1API)
-            7 -> updateAttributesToDriver()
-            8 -> deleteDriverAttributes()
+            5 -> addAttributesToDriver() //works
+            6 -> listDriverAttributes(driver1API) //works
+            7 -> updateAttributesToDriver() //works
+            8 -> deleteDriverAttributes() //works
             //9 -> searchDriverByCountry()
-            10 -> markDriverExists()
+            10 -> markDriverExists() //works
 
             11 -> addTeamAndLocation() //works
             12 -> listTeamLocation() //works
@@ -46,10 +44,12 @@ fun runMenu() {
 
             17 -> saveDriverFile()
             18 -> loadDriverFile()
-            19 -> searchDriverByPodiumNumber(60)
-            20 -> searchTeamByCountry("UK")
-            21 -> checkTeamExist(0)
-            22 -> checkTeamsCount()
+            19 -> searchDriverByPodiumNumber(60) //works
+            20 -> searchTeamByCountry("UK") //works
+            21 -> checkTeamExist(0) //works
+            22 -> checkTeamsCount() //works
+            23 -> saveTeamFile()
+            24 -> loadTeamFile()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
 
@@ -100,6 +100,8 @@ fun mainMenu() = readNextInt(
          > |  20) Search Team by Country                       |
          > |  21) Check Team exist                             |
          > |  22) Check how many teams added                   |
+         > |  23) Save Team                                    |
+         > |  24) Load Team                                    |
          > |                                                   |
          > -----------------------------------------------------  
          > |   0) Exit                                         |
@@ -218,19 +220,15 @@ fun deleteDriver() {
 fun addAttributesToDriver() {
     val driver = askUserToChooseDriver() // Get the driver object
     if (driver != null) {
-        if (driver.id != null) {  // Check if the driver's ID is not null
-            // Update the driver's attributes
-            driver.trophies = readNextInt("Enter the number of trophies: ")
-            driver.podiums = readNextInt("Enter the number of podiums: ")
 
-            // Pass the updated driver object and ID to the update() method
-            if (driver1API.update(driver.id, driver)) {
-                println("Driver attributes added successfully.")
-            } else {
-                println("Failed to add driver attributes.")
-            }
+        driver.trophies = readNextInt("Enter the number of trophies: ")
+        driver.podiums = readNextInt("Enter the number of podiums: ")
+
+        // Pass the updated driver object and ID to the update() method
+        if (driver1API.update(driver.id, driver)) {
+            println("Driver attributes added successfully.")
         } else {
-            println("Driver ID is invalid.")
+            println("Failed to add driver attributes.")
         }
     } else {
         println("No driver selected.")
@@ -447,7 +445,7 @@ fun searchTeamByCountry(country: String) {
     val teams = driver1API.listAllTeams()
 
     // Ensure teams list is not null
-    if (teams == null || teams.isEmpty()) {
+    if (teams.isEmpty()) {
         println("No teams found in the database.")
         return
     }
@@ -545,6 +543,25 @@ fun loadDriverFile() {
         System.err.println("Error reading from file: $e")
     }
 }
+
+fun saveTeamFile() {
+    try {
+        // Save team data to a file
+        teamAPI.save("team.xml")
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun loadTeamFile() {
+    try {
+        // Load team data from a file
+        teamAPI.load("team.xml")
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
+    }
+}
+
 
 //------------------------------------
 // EXIT APP

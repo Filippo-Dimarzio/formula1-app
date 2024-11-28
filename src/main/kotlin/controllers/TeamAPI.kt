@@ -95,7 +95,7 @@ class TeamAPI(serializerType: Serializer) {
 
 
     @Throws(Exception::class)
-    fun load() {
+    fun load(s: String) {
         teams = serializer.read() as ArrayList<Team>
     }
 
@@ -105,4 +105,13 @@ class TeamAPI(serializerType: Serializer) {
 
 
     }
+
+    fun save(fileName: String) {
+        try {
+            serializer.save(teams, fileName)
+        } catch (e: Exception) {
+            System.err.println("Error saving to file: $e")
+        }
     }
+
+}

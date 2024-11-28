@@ -29,7 +29,7 @@ class Formula1Tests {
 
             // Loading the empty teams.xml file into a new object
             val loadedTeams = TeamAPI(XMLSerializer(File("team.xml")))
-            loadedTeams.load()
+            loadedTeams.load("team.xml")
 
             // Comparing the source of the teams (storingTeams) with the XML loaded teams (loadedTeams)
             assertEquals(0, storingTeams.numberOfTeams())
@@ -48,7 +48,7 @@ class Formula1Tests {
 
             // Loading teams.xml into a different collection
             val loadedTeams = TeamAPI(XMLSerializer(File("team.xml")))
-            loadedTeams.load()
+            loadedTeams.load("team.xml")
 
             // Comparing the source of the teams (storingTeams) with the XML loaded teams (loadedTeams)
             assertEquals(3, storingTeams.numberOfTeams())
