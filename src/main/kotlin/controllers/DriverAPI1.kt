@@ -34,7 +34,7 @@ class DriverAPI(private val teamAPI: MutableList<TeamAPI>, private var serialize
     /**
      * Initializes the API with default drivers.
      */
-    /*init {
+    init {
         drivers.addAll(
             listOf(
                 Driver(0, "Max Verstappen", "Dutch", "Netherlands", 0, 0, 100, true, 6, false, "Red Bull Racing", "Milton Keynes", "Red Bull Racing"
@@ -48,7 +48,7 @@ class DriverAPI(private val teamAPI: MutableList<TeamAPI>, private var serialize
         )
     }
 
-*/
+
 
     // ----------------------------------------------
     //  CRUD METHODS
