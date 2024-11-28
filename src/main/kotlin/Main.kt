@@ -42,14 +42,14 @@ fun runMenu() {
             15 -> listTeamDetails() //works
 
             16 -> askUserToChooseDriver()
-            //17 -> searchDriverByCountry(driver1API)
 
-            18 -> saveDriverFile()
-            19 -> loadDriverFile()
-            21 -> searchDriverByPodiumNumber(10)
-            22 -> searchTeamByCountry("United Kingdom")
-            23 -> checkTeamExist(0)
-            24 -> checkTeamsCount()
+
+            17 -> saveDriverFile()
+            18 -> loadDriverFile()
+            19 -> searchDriverByPodiumNumber(60)
+            20 -> searchTeamByCountry("UK")
+            21 -> checkTeamExist(0)
+            22 -> checkTeamsCount()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
 
@@ -89,18 +89,17 @@ fun mainMenu() = readNextInt(
          > -----------------------------------------------------
          > | REPORT MENU                                       | 
          > |   16) Ask User To Choose Driver (by driver team)  |
-         > |   17) Search Driver By Country  //don't work yet  | 
-         > |   18) Save Drivers                                |
-         > |   19) Load Drivers                                |
+         > |   17) Save Drivers                                |
+         > |   18) Load Drivers                                |
          > -----------------------------------------------------  
          > | REPORT MENU FOR ATTRIBUTES                        |                                
-         > |   20) Search for all driver (by Podium Number)    |
+         > |   19) Search for all driver (by Podium Number)    |
          > |                                                   |
          > -----------------------------------------------------
          > | REPORT MENU FOR TEAM                              | 
-         > |  22) Search Team by Country                       |
-         > |  23) Check Team exist                             |
-         > |  24) Check how many teams added                   |
+         > |  20) Search Team by Country                       |
+         > |  21) Check Team exist                             |
+         > |  22) Check how many teams added                   |
          > |                                                   |
          > -----------------------------------------------------  
          > |   0) Exit                                         |
@@ -167,7 +166,7 @@ fun listDriversByNationality() = println(driver1API.listDriversByNationality())
 fun updateDriver() {
     listDriver() // List all drivers
     if (driver1API.numberOfDrivers() > 0) {
-        val id = readNextInt("Enter the ID of the driver to update: ")
+        val id = readNextInt("Enter the ID of the driver to update from index 3: ")
         val driver = driver1API.findDriver(id)
 
         if (driver != null) {
@@ -202,7 +201,7 @@ fun updateDriver() {
 fun deleteDriver() {
     listDriver()
     if (driver1API.numberOfDrivers() > 0) {
-        val id = readNextInt("Enter the ID of the driver to delete: ")
+        val id = readNextInt("Enter the ID of the driver to delete from index 3: ")
 
         if (driver1API.delete(id)) {
             println("Driver deleted successfully.")
