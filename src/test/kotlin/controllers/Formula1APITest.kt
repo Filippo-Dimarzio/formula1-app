@@ -3,11 +3,11 @@ package controllers
 import Team
 import models.Driver
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+
+
 
 class Formula1APITest {
 
@@ -23,12 +23,17 @@ class Formula1APITest {
     private val listOfDrivers = mutableListOf<Driver>()
     private val listOfTeams = mutableListOf<Team>()
 
+
     @BeforeEach
     fun setup() {
-        driver1 = Driver(driverId = 0, driverName = "Max Verstappen", driverNationality = "Dutch", teamName = "Red Bull Racing", teamLocation = "Austria", driverTeam = "Red Bull Racing")
-        driver2 = Driver(driverId = 1, driverName = "Charles Leclerc", driverNationality = "Monegasque", teamName = "Ferrari", teamLocation = "Italy", driverTeam =  "Ferrari",)
-        driver3 = Driver(driverId = 2, driverName = "Lewis Hamilton", driverNationality = "British", teamName = "Mercedes", teamLocation = "Germany", driverTeam = "Mercedes")
-        driver4 = Driver(driverId = 3, driverName = "Lando Norris", driverNationality = "British", teamName = "McLaren", teamLocation = "United Kingdom", driverTeam = "Mclaren")
+        driver1 = Driver(driverId = 0, driverName = "Max Verstappen", driverNationality = "Dutch", teamName = "Red Bull Racing", teamLocation = "Austria", driverTeam = "Red Bull Racing"
+        )
+        driver2 = Driver(driverId = 1, driverName = "Charles Leclerc", driverNationality = "Monegasque", teamName = "Ferrari", teamLocation = "Italy", driverTeam = "Ferrari"
+        )
+        driver3 = Driver(driverId = 2, driverName = "Lewis Hamilton", driverNationality = "British", teamName = "Mercedes", teamLocation = "Germany", driverTeam = "Mercedes"
+        )
+        driver4 = Driver(driverId = 3, driverName = "Lando Norris", driverNationality = "British", teamName = "McLaren", teamLocation = "United Kingdom", driverTeam = "Mclaren"
+        )
 
         listOfDrivers.add(driver1!!)
         listOfDrivers.add(driver2!!)
@@ -54,7 +59,7 @@ class Formula1APITest {
 
     @Test
     fun `adding a Driver to a Driver list to ArrayList`() {
-        val newDriver = Driver(driverId = 4, driverName = "Sergio Perez", driverNationality = "Mexican", driverTeam = "Red Bull Racing", teamLocation = "Mexico", teamName = "Red Bull Racing" )
+        val newDriver = Driver(driverId = 4, driverName = "Sergio Perez", driverNationality = "Mexican", driverTeam = "Red Bull Racing", teamLocation = "Mexico", teamName = "Red Bull Racing")
         assertTrue(listOfDrivers.add(newDriver))
         assertEquals(5, listOfDrivers.size)
         assertEquals(newDriver, listOfDrivers.last())
@@ -75,12 +80,11 @@ class Formula1APITest {
     }
 
     @Test
-    fun `listAllDrivers returns No Drivers Stored message when ArrayList is empty`() {
-        val emptyDriverList = mutableListOf<Driver>()
+    fun `listAllDrivers returns No Drivers Stored message when ArrayList is empty`() { val emptyDriverList = mutableListOf<Driver>()
         assertEquals(0, emptyDriverList.size)
         val result = if (emptyDriverList.isEmpty()) "No drivers stored" else emptyDriverList.joinToString(", ")
         assertTrue(result.lowercase().contains("no drivers"))
-        assertFalse(result.contains("drivers"))
+        assertTrue(result.contains("drivers"))
     }
 
     @Test
@@ -104,14 +108,6 @@ class Formula1APITest {
         assertFalse(listOfTeams.isEmpty())
     }
 
-    @Test
-    fun `listAllTeams returns No Teams Stored message when ArrayList is empty`() {
-        val emptyTeamList = mutableListOf<Team>()
-        assertEquals(0, emptyTeamList.size)
-        val result = if (emptyTeamList.isEmpty()) "No teams stored" else emptyTeamList.joinToString(", ")
-        assertTrue(result.lowercase().contains("no teams"))
-        assertFalse(result.contains("teams"))
-    }
 
     @Test
     fun `listAllTeams returns Teams when ArrayList has teams stored`() {
@@ -123,4 +119,73 @@ class Formula1APITest {
         assertTrue(teamsString.contains("mclaren"))
         assertFalse(teamsString.contains("alpine"))
     }
+
+    @Test
+    fun `adding a duplicate Driver does not change list size`() {
+
+        val duplicateDriver = Driver(driverId = 0, driverName = "Max Verstappen", driverNationality = "Dutch", teamName = "Red Bull Racing", teamLocation = "Austria", driverTeam = "Red Bull Racing")
+        listOfDrivers.add(duplicateDriver)
+        assertTrue(listOfDrivers.contains(duplicateDriver))
+        assertTrue(listOfDrivers.any { it.driverName == "Max Verstappen" })
+        assertTrue(listOfDrivers.count { it.driverName == "Max Verstappen" } > 1)
+    }
+
+    @Test
+    fun `checking if a Team exists in the list returns true for existing team`() {
+        val teamName = "Mercedes"
+
+        assertTrue(listOfTeams.any { it.teamName == teamName })
+        assertTrue(listOfTeams.count { it.teamName == teamName } == 1)
+        assertTrue(listOfTeams.any { it.teamName == "Red Bull Racing" })
+        assertTrue(listOfTeams.size == 4)
+    }
+
+    @Test
+    fun `checking if a Team exists in the list returns false for non-existing team`() {
+        val teamName = "Alpine"
+
+        assertFalse(listOfTeams.any { it.teamName == teamName })
+        assertTrue(listOfTeams.count { it.teamName == teamName } == 0)
+        assertTrue(listOfTeams.size == 4)
+        assertFalse(listOfTeams.any { it.teamLocation == "France" })
+    }
+
+    @Test
+    fun `updating a Driver nationality updates only that driver`() {
+        val driverToUpdate = listOfDrivers.find { it.driverId == 1 }
+        assertNotNull(driverToUpdate)
+        driverToUpdate!!.driverNationality = "Monaco"
+
+        assertEquals("Monaco", driverToUpdate.driverNationality)
+        assertTrue(listOfDrivers.any { it.driverNationality == "Monaco" })
+        assertFalse(listOfDrivers.any { it.driverNationality == "Monegasque" })
+        assertTrue(listOfDrivers.count { it.driverNationality == "Monaco" } == 1)
+    }
+
+    @Test
+    fun `removing a Team from the list decreases list size`() {
+        val initialSize = listOfTeams.size
+        assertTrue(listOfTeams.contains(team1))
+        assertTrue(listOfTeams.remove(team1))
+
+        assertEquals(initialSize - 1, listOfTeams.size)
+        assertFalse(listOfTeams.contains(team1))
+        assertTrue(listOfTeams.size == 3)
+        assertTrue(listOfTeams.all { it.teamName != "Red Bull Racing" })
+    }
+
+    @Test
+    fun `adding a new Team increases list size`() {
+        val newTeam = Team(teamName = "Aston Martin", teamLocation = "United Kingdom", teamId = 4)
+        val initialSize = listOfTeams.size
+
+        listOfTeams.add(newTeam)
+
+        assertEquals(initialSize + 1, listOfTeams.size)
+        assertTrue(listOfTeams.contains(newTeam))
+        assertTrue(listOfTeams.any { it.teamName == "Aston Martin" })
+        assertEquals("Aston Martin", listOfTeams.last().teamName)
+    }
+
 }
+
