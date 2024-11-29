@@ -35,6 +35,8 @@ class DriverAPI(private val teamAPI: MutableList<TeamAPI>, private var serialize
     /**
      * Initializes the API with default drivers.
      */
+
+    //checked this on kotlin playground from the documentation
     init {
         drivers.addAll(
             listOf(

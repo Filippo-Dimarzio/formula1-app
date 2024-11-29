@@ -10,7 +10,6 @@ import utils.readNextLine
 import java.io.File
 import kotlin.system.exitProcess
 
-
 private val teamAPI = TeamAPI(JSONSerializer(File("team.json")))
 
 private val driver1API = DriverAPI(mutableListOf(), JSONSerializer(File("driver.json")))
@@ -45,7 +44,7 @@ fun runMenu() {
             17 -> saveDriverFile()
             18 -> loadDriverFile()
             19 -> searchDriverByPodiumNumber(60) //works
-            20 -> searchTeamByCountry("UK") //works
+            20 -> searchTeamByCountry("uk") //works
             21 -> checkTeamExist(0) //works
             22 -> checkTeamsCount() //works
             23 -> saveTeamFile()
@@ -248,7 +247,6 @@ fun updateAttributesToDriver() {
     }
 }
 
-
 fun deleteDriverAttributes() {
     val driver = askUserToChooseDriver()
     if (driver != null) {
@@ -364,45 +362,23 @@ fun listTeamDetails() {
 //------------------------------------
 // Method to search drivers by country
 
-
 // this doesn't work but makes the next function work
 fun searchDriverByCountry(searchString: String, driverTeam: String) {
-    // Fetch the list of drivers from the DriverAPI
-    val formulas1 = driver1API.listAllDrivers()
+    val result = driver1API.listAllDrivers()
+        .filter { it.driverNationality.contains(searchString, ignoreCase = true) && it.teamName.contains(driverTeam, ignoreCase = true) }
+        .joinToString("\n") { "Driver: ${it.driverName}, Team: ${it.teamName}, Nationality: ${it.driverNationality}" }
 
-    // Filter the result by nationality and team
-    val result = formulas1.filter { formula1 ->
-        formula1.driverNationality.contains(searchString, ignoreCase = true) &&
-                formula1.teamName.contains(driverTeam, ignoreCase = true)
-    }.joinToString("\n") {
-        "Driver: ${it.driverName}, Team: ${it.teamName}, Nationality: ${it.driverNationality}"
-    }
-
-    // Print the result
-    if (result.isNotEmpty()) {
-        println(result)
-    } else {
-        println("No drivers found with nationality $searchString and team $driverTeam")
-    }
+    println(result.ifEmpty { "No drivers found with nationality $searchString and team $driverTeam" })
 }
 
 fun searchDriverByPodiumNumber(podiumNumber: Int) {
-    // Assuming driver1API has a method listAllDrivers() which returns a list of Driver objects
-    val drivers = driver1API.listAllDrivers()
+    val filteredDrivers = driver1API.listAllDrivers().filter { it.podiums == podiumNumber }
 
-    // Filter drivers based on the podium number
-    val filteredDrivers = drivers.filter { driver ->
-        driver.podiums == podiumNumber
-    }
-
-    // Display the result
-    if (filteredDrivers.isNotEmpty()) {
-        println("Drivers with $podiumNumber podium(s):")
-        filteredDrivers.forEach { driver ->
-            println("Driver: ${driver.driverName}, Team: ${driver.teamName}, Podiums: ${driver.podiums}")
-        }
-    } else {
+    if (filteredDrivers.isEmpty()) {
         println("No drivers found with $podiumNumber podium(s).")
+    } else {
+        println("Drivers with $podiumNumber podium(s):")
+        filteredDrivers.forEach { println("Driver: ${it.driverName}, Team: ${it.teamName}, Podiums: ${it.podiums}") }
     }
 }
 //------------------------------------
@@ -410,48 +386,23 @@ fun searchDriverByPodiumNumber(podiumNumber: Int) {
 //------------------------------------
 
 fun searchTeamByCountry(country: String) {
+    val filteredTeams = driver1API.listAllTeams().filter { it.teamLocation.equals(country, ignoreCase = true) }
 
-    val teams = driver1API.listAllTeams()
-
-
-    if (teams.isEmpty()) {
-        println("No teams found in the database.")
-        return
-    }
-
-    val filteredTeams = teams.filter { it.teamLocation.equals(country, ignoreCase = true) }
-
-
-    if (filteredTeams.isNotEmpty()) {
-        println("Teams found in $country:")
-        for (team in filteredTeams) {
-            println("Team: ${team.teamName}, Location: ${team.teamLocation}")
-        }
-    } else {
+    if (filteredTeams.isEmpty()) {
         println("No teams found in $country.")
+    } else {
+        println("Teams found in $country:")
+        filteredTeams.forEach { println("Team: ${it.teamName}, Location: ${it.teamLocation}") }
     }
 }
 
+fun checkTeamsCount() = println("Number of teams: ${teamAPI.getAllTeams().size}")
 
-fun checkTeamsCount() {
-    val teams = teamAPI.getAllTeams()
-    println("Number of teams: ${teams.size}")
-}
 
 fun checkTeamExist(teamId: Int) {
-    val team = teamAPI.findTeamById(teamId)
-    if (team != null) {
-        println("Team exists: ${team.teamName}, Location: ${team.teamLocation}")
-    } else {
-        println("No team found with ID $teamId")
-    }
-}
-
-
-
-fun teamExists(teamId: Int): Boolean {
-    val team = teamAPI.findTeamById(teamId)
-    return team != null
+    teamAPI.findTeamById(teamId)?.let {
+        println("Team exists: ${it.teamName}, Location: ${it.teamLocation}")
+    } ?: println("No team found with ID $teamId")
 }
 
 fun listAllTeams() {
@@ -478,27 +429,30 @@ fun listAllTeams() {
 
 private fun askUserToChooseDriver(): Driver? {
     listDriversTeam()
-    if (driver1API.numberOfDrivers() > 0) {
-        val driver = driver1API.findDriver(readNextInt("\nEnter the id of the driver: "))
-        if (driver != null) {
-            if (!driver.wasDriverAdded) {
-                println("Driver is NOT in the system.")
-            } else {
-                return driver // chosen driver is valid
-            }
-        } else {
+    val driverId = readNextInt("\nEnter the id of the driver: ")
+    val driver = driver1API.findDriver(driverId)
+
+    return when {
+        driver == null -> {
             println("Driver id is not valid")
+            null
         }
+        !driver.wasDriverAdded -> {
+            println("Driver is NOT in the system.")
+            null
+        }
+        else -> driver
     }
-    return null // selected driver is not valid
 }
 
-//Save and Load methods2
+
+//Save and Load methods
 
 fun saveDriverFile() {
     try {
         // Corrected file name as a string literal
         driver1API.save("drivers.json")
+        println("Driver has been saved!")
     } catch (e: Exception) {
         System.err.println("Error writing to file: $e")
     }
@@ -508,6 +462,7 @@ fun loadDriverFile() {
     try {
         // You may need to pass a filename here if required
         driver1API.load("drivers.json")
+        println("Driver has been loaded!")
     } catch (e: Exception) {
         System.err.println("Error reading from file: $e")
     }
@@ -517,6 +472,7 @@ fun saveTeamFile() {
     try {
         // Save team data to a file
         teamAPI.save("team.json")
+        println("Team has been saved!")
     } catch (e: Exception) {
         System.err.println("Error writing to file: $e")
     }
@@ -526,6 +482,7 @@ fun loadTeamFile() {
     try {
         // Load team data from a file
         teamAPI.load("team.json")
+        println("Team has been loaded!")
     } catch (e: Exception) {
         System.err.println("Error reading from file: $e")
     }
