@@ -27,9 +27,10 @@
 ## Technologies Used 💻
 
 - This program has been made on the language Kotlin.
-- I've used various Java Libraries as a way to facilitate the UserInput, ArrayList and many more.
+- I've used various Java Libraries as a way to facilitate the UserInput, ArrayList , Peristance elements and many more.
 - https://junit.org/junit5/ “JUnit 5”
 - Attempted to use linting for certain aspects
+- 
 
 For linting the project
 - “Maven” https://maven.apache.org/
